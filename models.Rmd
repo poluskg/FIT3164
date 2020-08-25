@@ -1,0 +1,97 @@
+---
+title: "models"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readtext)
+library(stringr)
+```
+These models use the 14 variable data set
+
+Separate testing + train
+
+```{r}
+set.seed(1111) #random seed   
+train.row = sample(1:nrow(z), 0.7*nrow(z))  
+data.train = z[train.row,]  
+data.test = z[-train.row,]
+```
+
+
+
+decision tree
+```{r}
+library(rpart)
+
+tree<- rpart(Cath~., data.train)
+
+tree
+
+plot(tree)
+text(tree)
+
+set.seed(1234)
+# fix later
+treep<- predict(tree, data.test, type = "class")
+table(actual	=	data.test$target,	predicted	=	treep)
+
+```
+accuracy is 84%
+
+bagging
+```{r}
+
+library(adabag)
+library(randomForest)
+set.seed(1234)
+bag<- bagging(Cath~., data = data.train, mfinal=100)
+
+set.seed(1234)
+predict.bagging(bag, data.test)$confusion
+
+```
+86.8% accuracy
+
+## Boosting 
+```{r}
+library(gbm)
+
+set.seed(1234)
+
+boost <- boosting(Cath~. , data = data.train)
+pred.boost <- predict.boosting(boost, newdata=data.test)
+print(pred.boost$confusion)
+
+```
+The accuracy for the boosting model is 81.881%
+
+## Random Forest 
+
+```{r}
+
+set.seed(1234)
+forest<- randomForest(Cath~., data = data.train)
+
+forest
+
+```
+95% accurate??? double check
+
+
+variable importance
+```{r}
+# tree
+tree$variable.importance
+
+# bagging
+bag$importance
+
+# boosting
+boost$importance
+
+# random forest
+forest$importance
+```

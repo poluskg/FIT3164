@@ -1,0 +1,163 @@
+---
+title: "data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(readtext)
+library(stringr)
+library(readxl)
+```
+
+
+read in the 3 data sets
+```{r}
+db<- read.csv('heart(4dbs).csv')
+# 703 are repeated rows, 302 unique
+unique(db)
+
+uci<- read.csv('heart(uci).csv')
+colnames(uci)
+uci <- uci %>% rename(age = ï..age) 
+unique(uci) #one repeated row
+
+z<- read_excel("Zdataset.xlsx", sheet=1)
+unique(z)
+# 0 repeated row
+
+```
+
+```{r}
+data<-rbind(unique(db), uci)
+
+# cp is categorical
+data$cp<-as.factor(data$cp)
+data$sex<-as.factor(data$sex)
+data$target<-as.factor(data$target)
+```
+Hungary data
+```{r}
+# this is the small 14 variable set
+h<- read.table("processed.hungarian.data")
+
+# split columns
+
+h<-h %>% separate(V1, c("Age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal", "num"))
+
+write.csv(h,'hungary_small.csv')
+```
+
+```{r}
+# large set
+
+# this is the small 76 variable set
+
+#this line works
+h<-readtext("hungarian.data")
+h<- h[-1]
+
+
+#split rows
+
+h<-h %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+
+h<-h %>%
+  mutate(text = str_replace(text, "\n",""))
+
+
+h<-h %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+
+write.csv(h,'hungary_large.csv')
+```
+
+Cleveland set
+```{r}
+# large set
+
+# this is the small 76 variable set
+
+#this line works
+c<-readtext("cleveland.data")
+c<- c[-1]
+
+
+#split rows
+
+c<-c %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+
+c<-c %>%
+  mutate(text = str_replace(text, "\n",""))
+
+
+c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+
+write.csv(c,'cleveland_large.csv')
+```
+
+switzerland set
+```{r}
+# large set
+
+# this is the small 76 variable set
+
+#this line works
+c<-readtext("switzerland.data")
+c<- c[-1]
+
+
+#split rows
+
+c<-c %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+
+c<-c %>%
+  mutate(text = str_replace(text, "\n",""))
+
+
+c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+
+write.csv(c,'switzerland_large.csv')
+```
+
+
+long beach set
+```{r}
+# large set
+
+# this is the small 76 variable set
+
+#this line works
+c<-readtext("long-beach-va.data")
+c<- c[-1]
+
+
+#split rows
+
+c<-c %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+
+c<-c %>%
+  mutate(text = str_replace(text, "\n",""))
+
+
+c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+
+write.csv(c,'longbeach_large.csv')
+```
