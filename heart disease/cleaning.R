@@ -4,8 +4,8 @@ library(readtext)
 library(stringr)
 library(readxl)
 
-za <- read.csv('Z-Alizadeh_sani_dataset.csv')
-z<- read_excel("Zdataset.xlsx", sheet=1)
+z <- read.csv('Z-Alizadeh_sani_dataset.csv')
+#z<- read_excel("Zdataset.xlsx", sheet=1)
 
 ####clean####
 
