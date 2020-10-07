@@ -1,0 +1,16 @@
+attach(data)
+variablesList <- list("Age"=Age, "Weight (kg)"=Weight, "Height (cm)"=Length, "Sex"=Sex, "BMI"=BMI, 
+     "DM"=DM, "HTN"=HTN, "Current Smoker"=Current.Smoker, "Ex Smoker"=EX.Smoker, 
+     "FH"=FH, "Obesity"="Obesity", "CRF"="CRF", "CVA"="CVA", 
+     "Airway Disease"=Airway.disease, "Thyroid Disease"=Thyroid.Disease, "CHF"=CHF, 
+     "DLP"=DLP, "Blood Pressure"=BP, "PR"=PR, "Edema"=Edema, 
+     "Weak Peripheral Pulse"=Weak.Peripheral.Pulse, "Lung Rales"=Lung.rales, 
+     "Systolic Murmur"="Systolic.Murmur", "Diastolic Murmur"=Diastolic.Murmur, 
+     "Function.Class"=Function.Class, "Atypical"=Atypical, "Nonanginal"=Nonanginal, 
+     "Exertional.CP"=Exertional.CP, "LowTH.Ang"="LowTH.Ang", "Q.Wave"=Q.Wave, 
+     "St.Elevation"=St.Elevation, "St.Depression"=St.Depression, 
+     "Tinversion"=Tinversion, "LVH"=LVH,"Poor.R.Progression"=Poor.R.Progression, 
+     "BBB"=BBB, "FBS"=FBS, "CR"=CR, "TG"=TG, "LDL"=LDL, "HDL"=HDL, "ESR"=ESR, 
+     "HB"=HB, "Potassium (K)"=K, "Sodium (Na)"=Na, "WBC"=WBC, "Lymph"=Lymph, 
+     "Neut"=Neut, "PLT"=PLT, "EF.TTE"=EF.TTE, "Region.RWMA"=Region.RWMA, 
+     "VHD"=VHD, "Cath"=Cath)
