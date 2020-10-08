@@ -8,25 +8,30 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readtext)
 library(stringr)
+library(rpart)
+library(adabag)
+library(randomForest)
+library(gbm)
+library(xgboost)
+library(ipred)
 ```
-These models use the 14 variable data set
+These models use the z alizadehsani set
 
-Separate testing + train
+Separate testing + train (repeated from data.RMD, no need too run this chunk again)
 
 ```{r}
 set.seed(1111) #random seed   
 train.row = sample(1:nrow(z), 0.7*nrow(z))  
 data.train = z[train.row,]  
 data.test = z[-train.row,]
-```
 
+```
 
 
 decision tree
 ```{r}
-library(rpart)
 
-tree<- rpart(Cath~., data.train)
+tree<- rpart(Cath~., data.train, method="class")
 
 tree
 
@@ -34,52 +39,163 @@ plot(tree)
 text(tree)
 
 set.seed(1234)
-# fix later
+
 treep<- predict(tree, data.test, type = "class")
-table(actual	=	data.test$target,	predicted	=	treep)
+table(actual	=	data.test$Cath,	predicted	=	treep)
 
 ```
-accuracy is 84%
+75.82% accuracy
 
-bagging
+bagging- this takes too long
 ```{r}
-
-library(adabag)
-library(randomForest)
 set.seed(1234)
-bag<- bagging(Cath~., data = data.train, mfinal=100)
+bag<- bagging(Cath~., data = data.train, mfinal=50)
 
 set.seed(1234)
-predict.bagging(bag, data.test)$confusion
+predict.bagging(bag, data.test)
+
 
 ```
-86.8% accuracy
 
+https://rpubs.com/omicsdata/gbm
 ## Boosting 
 ```{r}
-library(gbm)
 
 set.seed(1234)
 
-boost <- boosting(Cath~. , data = data.train)
-pred.boost <- predict.boosting(boost, newdata=data.test)
-print(pred.boost$confusion)
+d1<-data.train
+d1$Cath<-as.numeric(d1$Cath)-1
+
+# this model predicts wierd values, fix later
+
+boost<- gbm(Cath~., data=d1, shrinkage=0.1, distribution = 'bernoulli', cv.folds=5, n.trees=100)
+
+boost
+
+d2<-data.test
+d2$Cath<-as.numeric(d2$Cath)-1
+pred.boost <- predict.gbm(boost, newdata=d2)
+
+prediction <- as.numeric(pred > 0.5)
+
+table(actual	=	xg.test[,56]-1,	predicted	=	prediction)
 
 ```
-The accuracy for the boosting model is 81.881%
+
 
 ## Random Forest 
 
 ```{r}
-
 set.seed(1234)
-forest<- randomForest(Cath~., data = data.train)
+forest<- randomForest(as.factor(Cath)~., data = data.train, ntree=1000)
 
 forest
 
 ```
-95% accurate??? double check
+86.32% accurate 
 
+
+##XG boost
+
+```{r}
+xg.train<-data.train
+xg.test<- data.test
+
+
+# to numeric
+xg.train$Obesity <-as.numeric(xg.train$Obesity)
+xg.train$CRF <-as.numeric(xg.train$CRF)
+xg.train$CVA <-as.numeric(xg.train$CVA)
+xg.train$Airway.disease <-as.numeric(xg.train$Airway.disease)
+xg.train$Thyroid.Disease <-as.numeric(xg.train$Thyroid.Disease)
+xg.train$CHF <-as.numeric(xg.train$CHF)
+xg.train$DLP <-as.numeric(xg.train$DLP)
+xg.train$Weak.Peripheral.Pulse <-as.numeric(xg.train$Weak.Peripheral.Pulse)
+xg.train$Lung.rales <-as.numeric(xg.train$Lung.rales)
+xg.train$Systolic.Murmur <-as.numeric(xg.train$Systolic.Murmur)
+xg.train$Diastolic.Murmur <-as.numeric(xg.train$Diastolic.Murmur)
+xg.train$Dyspnea <-as.numeric(xg.train$Dyspnea)
+xg.train$Atypical <-as.numeric(xg.train$Atypical)
+xg.train$Nonanginal <-as.numeric(xg.train$Nonanginal)
+xg.train$Exertional.CP <-as.numeric(xg.train$Exertional.CP)
+xg.train$LowTH.Ang <-as.numeric(xg.train$LowTH.Ang)
+xg.train$LVH <-as.numeric(xg.train$LVH)
+xg.train$Poor.R.Progression <-as.numeric(xg.train$Poor.R.Progression)
+xg.train$BBB <-as.numeric(xg.train$BBB)
+xg.train$VHD <-as.numeric(xg.train$VHD)
+xg.train$Sex <-as.numeric(xg.train$Sex)
+xg.train$Current.Smoker <-as.numeric(xg.train$Current.Smoker)
+xg.train$Cath <-as.numeric(xg.train$Cath)
+
+# to numeric
+xg.test$Obesity <-as.numeric(xg.test$Obesity)
+xg.test$CRF <-as.numeric(xg.test$CRF)
+xg.test$CVA <-as.numeric(xg.test$CVA)
+xg.test$Airway.disease <-as.numeric(xg.test$Airway.disease)
+xg.test$Thyroid.Disease <-as.numeric(xg.test$Thyroid.Disease)
+xg.test$CHF <-as.numeric(xg.test$CHF)
+xg.test$DLP <-as.numeric(xg.test$DLP)
+xg.test$Weak.Peripheral.Pulse <-as.numeric(xg.test$Weak.Peripheral.Pulse)
+xg.test$Lung.rales <-as.numeric(xg.test$Lung.rales)
+xg.test$Systolic.Murmur <-as.numeric(xg.test$Systolic.Murmur)
+xg.test$Diastolic.Murmur <-as.numeric(xg.test$Diastolic.Murmur)
+xg.test$Dyspnea <-as.numeric(xg.test$Dyspnea)
+xg.test$Atypical <-as.numeric(xg.test$Atypical)
+xg.test$Nonanginal <-as.numeric(xg.test$Nonanginal)
+xg.test$Exertional.CP <-as.numeric(xg.test$Exertional.CP)
+xg.test$LowTH.Ang <-as.numeric(xg.test$LowTH.Ang)
+xg.test$LVH <-as.numeric(xg.test$LVH)
+xg.test$Poor.R.Progression <-as.numeric(xg.test$Poor.R.Progression)
+xg.test$BBB <-as.numeric(xg.test$BBB)
+xg.test$VHD <-as.numeric(xg.test$VHD)
+xg.test$Sex <-as.numeric(xg.test$Sex)
+xg.test$Current.Smoker <-as.numeric(xg.test$Current.Smoker)
+xg.test$Cath <-as.numeric(xg.test$Cath)
+# make into a matrix
+xg.train<- data.matrix(xg.train)
+xg.test<-data.matrix(xg.test)
+Cath<- as.numeric(data.train$Cath)
+
+# 
+```
+
+This is the first xgboost using linear regression, then classifying each prediction as Cath or not Cath with split on 0.5
+```{r}
+xg<- xgboost(data=xg.train[,-56], label = Cath, max.depth=6, nrounds = 25)
+
+
+importance <- xgb.importance(feature_names = colnames(xg.train), model = xg)
+importance
+
+pred <- predict(xg, xg.test[,-56])
+prediction <- as.numeric(pred > 1.5)
+err <- mean(as.numeric(pred > 1.5) != xg.test[,56]-1)
+print(paste("test-error=", err))
+
+# for Cath column 1= Cad, 2=Normal
+
+table(actual	=	xg.test[,56]-1,	predicted	=	prediction)
+```
+73.6% accuracy. This Xgboost probably isn't the best model because it doesn't estimate binary variables.
+
+This Xgboost uses binary/logistic regression:
+```{r}
+Cath=Cath-1
+xg2<- xgboost(data=xg.train[,-56], label = Cath, max.depth=4, nrounds = 25, objective = "binary:logistic")
+
+
+importance <- xgb.importance(feature_names = colnames(xg.train), model = xg2)
+importance
+
+pred <- predict(xg2, xg.test[,-56])
+prediction <- as.numeric(pred > 0.5)
+
+table(actual	=	xg.test[,56]-1,	predicted	=	prediction)
+```
+76.9% accuracy for max.depth=6, nround=25
+75.8% accuracy for max.depth=7, nround=25
+75.8% accuracy for max.depth=7, nround=50
+79.1% accuracy for max.depth=4/3, nround=25
 
 variable importance
 ```{r}
