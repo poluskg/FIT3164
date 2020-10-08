@@ -9,6 +9,7 @@ fig <- fig %>%
   add_trace(
     x = ~Cath[data$Sex == 'Male'],
     y = ~Age[data$Sex == 'Male'],
+    ylim(0,1),
     legendgroup = 'Yes',
     scalegroup = 'Yes',
     name = 'Male',
@@ -25,6 +26,7 @@ fig <- fig %>%
   add_trace(
     x = ~Cath[data$Sex == 'Fmale'],
     y = ~Age[data$Sex == 'Fmale'],
+    ylim(0,1),
     legendgroup = 'No',
     scalegroup = 'No',
     name = 'Female',
@@ -51,5 +53,4 @@ fig <- fig %>%
     violingroupgap = 0,
     violinmode = 'overlay'
   )
-
 fig

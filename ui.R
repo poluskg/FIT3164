@@ -6,6 +6,13 @@ library(plotly)
 
 data <- read.csv("Z-Alizadeh_sani_dataset.csv", header = TRUE)
 
+source("Overview.R")
+source("dataOverview.R")
+source("VariableImportance.R")
+source("predictiveModel.R")
+source("References.R")
+source("helper.R")
+
 header <- dashboardHeader()
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -17,6 +24,7 @@ sidebar <- dashboardSidebar(
     menuItem("Acknowledgements", tabName = "acknowledgements")
   )
 )
+
 body <- dashboardBody(
   tabItems(
     tabItem("introduction",
@@ -29,25 +37,29 @@ body <- dashboardBody(
     tabItem("dataOverview",
             h1("Overview"),
             fluidRow(
-              valueBoxOutput("DataTotBox") %>% withSpinner(type=4),
+              valueBoxOutput("DataTotBox"),
               valueBoxOutput("DataVarBox"),
-              valueBoxOutput("DataMFBox")
-            )),
-    tabItem("variableAnalysis",
-            div(p("Select a variable to view its description and its impact on predictive diagnosis of heart disease."),
-                varSelectInput("variable", "Choose a Variable:", data),
-                plotOutput("data")
+              valueBoxOutput("DataMaleBox"),
+              valueBoxOutput("DataFmaleBox")
             ),
-            mainPanel("selected_var")
+    tabItem("variableAnalysis",
+            div(p("Select a variable to view it in more detail:"),
+                selectInput("var",
+                    label = "Select a Variable:",
+                    choices = variablesList,
+                    selected = "Age")
+                ),
+            div(textOutput("selected_var"))
+            
     ),
     tabItem("predictiveModel",
-            div(p("Enter the following information then click 'Get Results' to view whether or not you have Heart Disease")),
+            div(p("Enter the following information then click 'Get Results' to view whether or not you have Heart Disease"))
     ),
     tabItem("acknowledgements",
             div(h3("References")),
             tags$ul(references),
             div(h3("Contributors")),
-            div(h4("Katie Polus, Cassandra Elliott & Julia Paterson")),
+            div(h4("Katie Polus, Cassandra Elliott & Julia Paterson"))
     ))
   )
 

@@ -15,5 +15,5 @@ techniques and algorithms to develop a predictive model to predict if an individ
 coronary heart disease. This application aims to provide and educational tool for users to explore
 this deadly disease, as well as offer the opportunity for an informal diagnosis using predictive algorithms.")
 
-overviewText3 <- ("Disclaimer: The developers of this website are not medical professionals, predictive diagnosis
-should not be taken as final, nor replace formal medical diagnosis.")
+overviewText3 <- ("Disclaimer: The developers of this website are not medical professionals. All information provided
+including the predictive outcomes should be used purely for informative reasons and not replace formal medical diagnosis.")

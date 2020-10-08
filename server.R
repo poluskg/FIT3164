@@ -15,11 +15,23 @@ server <- function(input, output, session) {
     )
   })
   
-  output$DataMFBox <- renderValueBox({
+  output$DataMaleBox <- renderValueBox({
     valueBox(
-      VB_style(paste0(format(totalMales, big.mark='%'), "M to", format(totalFemales, big.mark='%'), "F"), "font-size: 60%;"),
-      "Male to Female Ratio", 
+      VB_style(paste0(format(round(totalMales, 1), nsmall=1), "%"), "font-size: 60%;"),
+      "Males", 
       color = "blue"
     )
   })
+  
+  output$DataFmaleBox <- renderValueBox({
+    valueBox(
+      VB_style(paste0(format(round(totalFemales, 1), nsmall=1), "%"), "font-size: 60%;"),
+      "Females", 
+      color = "blue"
+    )
+  })
+  
+  output$selected_var <- renderText({
+      toString(getDefinition(input$var))
+    })
 }
