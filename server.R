@@ -1,4 +1,5 @@
 server <- function(input, output, session) {
+  #DataOverview Page
   output$DataTotBox <- renderValueBox({
     valueBox(
       VB_style("303", "font-size: 60%;"),
@@ -31,7 +32,15 @@ server <- function(input, output, session) {
     )
   })
   
+  #VariableImportance Page
   output$selected_var <- renderText({
-      toString(getDefinition(input$var))
+      getDefinition(input$var)
     })
+  
+  #PredictiveModel Page
+  observeEvent(
+    input$predict, {
+      renderText(getPrediction())
+    }
+  )
 }

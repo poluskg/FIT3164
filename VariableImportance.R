@@ -25,16 +25,23 @@ variablesList = c("Age", "Weight (kg)", "Height (cm)", "Sex", "BMI", "DM", "HTN"
                   "HDL", "ESR", "HB", "Potassium (K)", "Sodium (Na)", "WBC", "Lymph", 
                   "Neut", "PLT", "EF.TTE", "Region.RWMA", "VHD", "Cath")
 
-varDefinition = data.frame(variablesList, "definition"=c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", 
-                                   "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", 
-                                   "v", "w", "x", "y", "z", "1", "2", "3", "4", "5", "6", 
-                                   "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", 
-                                   "17","18", "19", "20", "21", "22", "23", "24", "25", "26",
-                                   "27"))
+definition = c("Ageasdfasdf", "Weightsddddd (kg)", "Heiasdfasdfasdfasdght (cm)", 
+               "Seasdfasdfasdfax", "BMsdfgh sdfghjgfdsfghjI", "DMdsfghgfdsa", "HasdfghjkjhgfdsTN", 
+               "Currentasdfasdfas Smoker", "Easdfasdfasdfasdfa asdfafasdfx Smoasdfasdasdfasdfasdfker", 
+               "asdfasdfasdfasdfasdfFH", "Obe asdf asdf asdf asdfasdfasdfasdfassity", 
+               "CRF asdasdfadsfa asdfasdfasdfwergehtjkujhgfd dfghjyujhtfg sdfghtyh fgdsaf", 
+               "Casf asdf adfakdjhfaldskfjhal djfal jadshlf jalsd alsdjf alsjd laskjhf las VA",
+               NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+               NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+
+varDefinition = data.frame(variablesList, definition)
+varDefinition
 
 getDefinition <- function(var){
+    errorMessage = "Sorry, we couldn't find a definition for that."
     for (i in range(1, length(varDefinition))) {
         if(varDefinition$variablesList[i] == var)
-            return(varDefinition$definition[i])
-        }
+            return(toString(varDefinition$definition[i]))
+        else return(errorMessage)
+    }
 }
