@@ -1,5 +1,4 @@
 #Predictive Function:
-
 getPrediction <- function() {
   return("YOU HAVE HEART DISEASE")
 }
