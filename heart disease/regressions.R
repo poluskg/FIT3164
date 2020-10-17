@@ -53,3 +53,12 @@ par(mfrow = c(1,1))
 plotSlopes(interact_reg, plotx = "BP", modx = "Typical.Chest.Pain", modxVals = "std.dev", main = 'simple slopes plot')
 
 #interaction.plot(z$BP, z$Typical.Chest.Pain, z$Cath)
+
+
+####plotly tests####
+attach(za)
+library(plotly)
+data.fmt = list(color=rgb(0.8,0.8,0.8,0.8), width=4)
+line.fmt = list(dash="solid", width = 1.5, color=NULL)
+
+reg_plot <- plot_ly(x = )

@@ -3,22 +3,33 @@
 #use a pearson correlation for continuous variables
 library(ggplot2)
 library(ggpubr)
+library(plotly)
 
-pearson_cor_func <- function(var1,var2) {
-  cor_result <- cor.test(var1,var2, method = 'pearson')
-  return(cor_result)
+attach(za)
+
+####correlate####
+pearson_cor_func <- function(var1, var2) {
+  #correlate
+  cor_result <- cor.test(var1, var2, method = 'pearson')
+  #make an interactive plot
+  fig <- plot_ly(data = za, x = var1, y = var2, type = 'scatter', text = ~paste('Variable 1:', var1, '<br>Variable 2:', var2), color = ~var1, size = ~var1)
+  #return results
+  result_list <- list('result' = cor_result,'int_plot' = fig)
+  return(result_list)
 }
 
 
 #call it
-pearson_cor_func(za$Weight, za$BMI)
+#tell user to select variable 1 and variable 2 (idk how to change some labels in function yet)
+pearson_cor_func(Weight, BMI)
 
-#plot it
+####static/boring old plot it####
 ggscatter(za, x = "Weight", y = "BMI", add = 'reg.line', 
                        conf.int = TRUE, cor.coef = TRUE, cor.methods = 'pearson',
                        xlab = 'Weight', ylab = 'BMI')
 
-#correlation matrix of important continuous variables
+
+####correlation matrix of important continuous variables####
 #excluding y/n binary CVA (13), Dyspnea (26), atypical (28)
 #binary/categories typicalchestpain (25), htn(7), functionclass (27), currentsmoker (7)
 
@@ -33,3 +44,11 @@ chart.Correlation(important, histogram = TRUE, method = 'pearson')
 
 #possibly normalise?
 #need to do only a few at a time for readability
+####testing broken stuff####
+
+library(statsmodels)
+library(plotly.express)
+library(namespace)
+
+fig <- plot_ly(data = za, x = Weight, y = BMI, type = 'scatter', text = ~paste('Variable 1:', Weight, '<br>Variable 2:', BMI), color = ~Weight, size = ~Weight) %>% add_trace(za, x = lm(Weight~BMI), y = BMI, type = 'scatter')
+fig
