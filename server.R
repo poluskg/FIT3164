@@ -35,7 +35,12 @@ server <- function(input, output, session) {
   #VariableImportance Page
   output$selected_var <- renderText({
       getDefinition(input$var)
-    })
+  })
+  
+  #set up data.frame with all summary vars - display
+  #output$summary <- renderPrint({ 
+  # describe(data)
+  #})
   
   #PredictiveModel Page
   observeEvent(

@@ -44,8 +44,8 @@ body <- dashboardBody(
           choices = variablesList
         )
       ),
-      div(textOutput("selected_var"))
-      #plotOutput("selected_var")
+      div(textOutput("selected_var")),
+      verbatimTextOutput("summary")
     ),
     tabItem("predictiveModel",
       div(p("Enter the following information then click 'Get Results' to view whether or not you have Heart Disease")),
@@ -95,7 +95,12 @@ body <- dashboardBody(
             div(nonanginal)
           )
         ),
-      actionButton(inputId="predict", label="Get Results"),
+      tags$br(),
+      actionButton(
+          inputId="predict",
+          label="GET RESULTS",
+          style="color: #fff; background-color: #2E8B57; border-color: #90EE90; border-width: 3px;"
+      ),
       div(textOutput("results"))
     ),
     tabItem("acknowledgements",
