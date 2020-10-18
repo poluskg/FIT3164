@@ -94,13 +94,15 @@ h<-h %>%
 h<-h %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
 
 write.csv(h,'hungary_large.csv')
+
+hungarian<-h
 ```
 
 Cleveland set
 ```{r}
 # large set
 
-# this is the small 76 variable set
+# this is the 76 variable set
 
 #this line works
 c<-readtext("cleveland.data")
@@ -122,13 +124,15 @@ c<-c %>%
 c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
 
 write.csv(c,'cleveland_large.csv')
+
+cleveland<-c
 ```
 
 switzerland set
 ```{r}
 # large set
 
-# this is the small 76 variable set
+# this is the 76 variable set
 
 #this line works
 c<-readtext("switzerland.data")
@@ -150,6 +154,8 @@ c<-c %>%
 c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
 
 write.csv(c,'switzerland_large.csv')
+
+switzerland<-c
 ```
 
 
@@ -157,7 +163,7 @@ long beach set
 ```{r}
 # large set
 
-# this is the small 76 variable set
+# this is the  76 variable set
 
 #this line works
 c<-readtext("long-beach-va.data")
@@ -179,4 +185,111 @@ c<-c %>%
 c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
 
 write.csv(c,'longbeach_large.csv')
+
+longbeach<-c
 ```
+
+Z sani set              4 data sets
+Typical.Chest.Pain        derive from cp value 1
+Atypical                  derive from cp value 2
+Age                       age
+HTN                       hypertension- blood pressure above 130/80 - 140/90mmgg(mayo clinic definition)
+                          I'm making it trestbpd>80 AND trestbps>130 = YES
+BP                        blood pressure- most likely trestbps
+Current.Smoker            smoke 1 = yes; 0 = no 
+FBS                       fbs (fasting blood sugar > 120 mg/dl)  (1 = true; 0 = false)
+
+
+```{r}
+# Add all the extra data together
+
+other <- rbind(cleveland, switzerland)
+other<- rbind(other, longbeach)
+other<- rbind(other, hungarian)
+
+
+# delete repeated rows
+other<-distinct(other)
+
+# formatting
+other$id<-NULL
+other$ccf<-NULL
+other$painloc<-NULL
+other$dummy<-NULL
+other$lvx1<-NULL
+other$lvx2<-NULL
+other$lvx3<-NULL
+other$lvx4<-NULL
+other$cathef<-NULL
+other$junk<-NULL
+
+# change age to numeric, then delete incorrect rows
+other$age<- as.numeric(other$age)
+
+# change sex to factor form
+other$sex[other$sex == 1]<- "Male"
+other$sex[other$sex == 0]<- "Fmale"
+other$sex<-as.factor(other$sex)
+
+# change painexer
+# 9 is the NA value
+other$painexer[other$painexer == 9]<- NA
+# 1=Y 0=N
+other$painexer[other$painexer == 1]<- "Y"
+other$painexer[other$painexer == 0]<- "N"
+
+# rename some columns
+#HTN  =hypertension- blood pressure above 130/80 - 140/90mmgg(mayo clinic definition)
+
+other <- other %>% rename(Exertional.CP= painexer, Age=age, Sex=sex, HTN=htn)
+
+#Typical.Chest.Pain -derive from cp=value 1
+other$Typical.Chest.Pain <- 0
+other$Typical.Chest.Pain[other$cp == 1]<- 1
+
+# Atypical                  derive from cp value 2
+other$Atypical<- 0
+other$Atypical[other$cp == 2]<- 1
+
+#BP                        blood pressure- most likely trestbps
+other <- other %>% rename(BP=trestbps)
+#Current.Smoker            smoke 1 = yes; 0 = no 
+other <- other %>% rename(Current.Smoker=smoke)
+
+# Cath  Cad or Normal        =          num Value 0: < 50% diameter narrowing, Value 1: > 50% diameter narrowing
+# most of the num values are not 1 or 0? I am choosing to delete those rows
+other$Cath<- 0
+# if not 1 or 0 set to NA
+other$Cath[other$num>1]<-NA
+other$Cath[other$num==0]<- "Normal"
+other$Cath[other$num==1]<- "Cath"
+
+# select the columns of the other data sets to use
+suplementary<- other %>%select(Sex, Age, Exertional.CP, HTN, Atypical, Typical.Chest.Pain, BP, Current.Smoker, fbs, Cath)
+
+# change the z sani data set to the form in the comment above
+# fbs (fasting blood sugar > 120 mg/dl)  (1 = true; 0 = false)
+z2<-z
+z2$fbs<-0
+z2$fbs[z2$FBS>120]<-1
+
+
+# select the columns
+z3 <- select(z2, Sex, Age, Exertional.CP, HTN, Atypical, Typical.Chest.Pain, BP, Current.Smoker, fbs, Cath)
+# join the two sets
+# s=factor age=num ext=factor htn=num (change to fact) atyp=factor typ=num (change fac) bp=num current=factor fbs=num (fac) Cath=factor
+z3$HTN<-as.factor(z3$HTN)
+z3$Typical.Chest.Pain<- as.factor(z3$Typical.Chest.Pain)
+z3$fbs<- as.factor(z3$fbs)
+
+# suplementary sex remove invalid
+ 
+
+combined<- rbind(z3, suplementary)
+```
+
+```{r}
+save(z, file="z.Rdata")
+
+```
+
