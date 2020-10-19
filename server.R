@@ -33,19 +33,24 @@ server <- function(input, output, session) {
   })
   
   #VariableImportance Page
-  output$selected_var <- renderText({
+  output$var_definition <- renderText({
       getDefinition(input$var)
-  })
-  
-  #set up data.frame with all summary vars - display
-  #output$summary <- renderPrint({ 
-  # describe(data)
-  #})
-  
-  #PredictiveModel Page
-  observeEvent(
-    input$predict, {
-      renderText(getPrediction())
     }
   )
+  
+  output$var_summary <- renderTable({
+      getVariableSummary(input$var)
+    }
+  )
+  
+  #PredictiveModel Page
+  observeEvent(input$getResults, {
+    newLine <- data.frame(
+      Age=as.numeric(input$userAge), Weight=as.numeric(input$userWeight),
+      Height=as.numeric(input$userHeight), Sex=toString(input$userSex)
+    )
+    df <- rbind(newLine)
+    update(df)
+  })
+  update <- reactiveVal(df)
 }

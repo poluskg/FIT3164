@@ -1,8 +1,4 @@
-library(plotly)
-
-totalMales = sum(data$Sex == "Male")/303*100
-totalFemales = sum(data$Sex == "Fmale")/303*100
-  
+#Static violin model showing gender distribution/HD
 fig <- data %>%
   plot_ly(type = 'violin') 
 fig <- fig %>%
@@ -53,4 +49,3 @@ fig <- fig %>%
     violingroupgap = 0,
     violinmode = 'overlay'
   )
-fig
