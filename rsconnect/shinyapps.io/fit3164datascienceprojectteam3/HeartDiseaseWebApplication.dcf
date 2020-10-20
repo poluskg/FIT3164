@@ -5,6 +5,9 @@ account: fit3164datascienceprojectteam3
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3045581
-bundleId: 3760617
+bundleId: 3760896
 url: https://fit3164datascienceprojectteam3.shinyapps.io/HeartDiseaseWebApplication/
-when: 1603159181.01807
+when: 1603166991.02278
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: poluskg-data.R|unused_work.R|WebAppDesign.xlsx

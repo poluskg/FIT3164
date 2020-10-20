@@ -45,11 +45,10 @@ body <- dashboardBody(
                 )
     ),
     tabItem("predictiveModel",
-      h2("Generating a Predictive Model"),
+      h2("Generating the Predictive Model"),
       div(modelText),
       tags$br(),
       tableOutput('model_table'),
-      tags$br(),
       h3("Enter the required information then click", tags$b('Get Results'), "to view your Heart Disease prediction."),
       h4("Select a model type below, for more detailed inputs, select the", tags$b('Advanced'), "option."),
       tags$br(),

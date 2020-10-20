@@ -53,8 +53,8 @@ server <- function(input, output, session) {
     userDataBasic <- data.frame(
       Age=as.numeric(input$userAge_basic), Weight=as.numeric(input$userWeight_basic),
       Length=as.numeric(input$userHeight_basic), Sex=toString(getGender(input$userSex_basic)),
-      BMI=calculateBMI(input$userWeight_basic, input$userHeight_basic), DM=0, HTN=0, 
-      Current.Smoker=as.numeric(getSmokingStatus(input$smoker_basic, "Current.Smoker")),
+      BMI=calculateBMI(input$userWeight_basic, input$userHeight_basic), DM=as.numeric(input$dm_advanced),
+      HTN=0, Current.Smoker=as.numeric(getSmokingStatus(input$smoker_basic, "Current.Smoker")),
       Ex.Smoker=as.numeric(getSmokingStatus(input$smoker_basic, "Ex.Smoker")),
       FH=0, Obesity=isObese(calculateBMI(input$userWeight_basic, input$userHeight_basic)),
       CRF= "N", CVA="N", Airway.disease= "N", Thyroid.Disease= "N", CHF= "N", DLP= "N",

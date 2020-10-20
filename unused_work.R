@@ -1,3 +1,12 @@
+#Show variable summary on Data Overview page
+getVariableSummary <- function(var){
+  varName = variables[var]
+  value = eval(parse(text = varName))
+  # CHANGE FOR THOSE WITH NO MIN/MAX ELIGIBLE VALUES
+  variable_summary = data.frame("Min"=round(min(value), digits=2), "Max"=round(max(value), digits=2), "Mean"=round(mean(value), digits=2), "Median"=round(median(value), digits=2))
+  return(variable_summary)
+}
+
 #Static violin model showing gender distribution/HD
 fig <- data %>%
   plot_ly(type = 'violin') 
