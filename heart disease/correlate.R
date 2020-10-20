@@ -21,7 +21,7 @@ pearson_cor_func <- function(var1, var2) {
 
 #call it
 #tell user to select variable 1 and variable 2 (idk how to change some labels in function yet)
-pearson_cor_func(Weight, BMI)
+pearson_cor_func(BP, PR)
 
 ####static/boring old plot it####
 ggscatter(za, x = "Weight", y = "BMI", add = 'reg.line', 
