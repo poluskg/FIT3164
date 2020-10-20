@@ -4,14 +4,23 @@ library(plotly)
 attach(za)
 
 yes_cath <- filter(za, Cath == 'Cad')
+no_cath <- filter(za, Cath == 'Normal')
 
-#yes_small <- data.frame(yes_cath$Current.Smoker, yes_cath$EX.Smoker, yes_cath$HTN, yes_cath$DM, yes_cath$Edema)
-#no_small <- data.frame(no_cath$Current.Smoker, no_cath$EX.Smoker, no_cath$HTN, no_cath$DM, no_cath$Edema)
+yes_small <- data.frame(yes_cath$Current.Smoker, yes_cath$EX.Smoker, yes_cath$HTN, yes_cath$DM, yes_cath$Edema)
+no_small <- data.frame(no_cath$Current.Smoker, no_cath$EX.Smoker, no_cath$HTN, no_cath$DM, no_cath$Edema)
 
-yes_fig <- plot_ly(x = c('DM','HTN','Current.Smoker','EX.Smoker','Edema'), y = c(6,7,8,9,20), name = 'cath yes', type = 'bar')
-yes_fig
+new <- merge(data.frame(yes_small, row.names = NULL), data.frame(no_small, row.names = NULL), by = 0, all = TRUE)[-1]
 
+vars <- c('DM','HTN','Current.Smoker','EX.Smoker','Edema')
+yes_vars <- c(1,2,3,4,5)
+no_vars <- c(6,7,8,9,10)
 
+plot_data <- data.frame(vars, yes_vars, no_vars)
+fig <- plot_ly(plot_data, x = ~vars, y = ~yes_vars, type = 'bar', name = 'cath yes')
+fig <- fig %>% add_trace(y = ~no_vars, name = 'cath no')
+fig <- fig %>% layout(yaxis = list(title = 'count'), barmode = 'group')
+
+fig
 
 ####broken stuff i might fix later####
 #yes_counts <- table(yes_small$Current.Smoker)
