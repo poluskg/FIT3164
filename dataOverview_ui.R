@@ -39,3 +39,13 @@ getVariableSummary <- function(var){
   variable_summary = data.frame("Min"=round(min(value), digits=2), "Max"=round(max(value), digits=2), "Mean"=round(mean(value), digits=2), "Median"=round(median(value), digits=2))
   return(variable_summary)
 }
+
+modelText <- div("A range of models were generated, altered and tested against the dataset.
+                 The resulting accuracy of these models can be viewed in the table below.
+                 The final selected model - used for the prediction outcome on the next page - 
+                 was the Bagging model, which has a predictive accuracy of 81.31%.")
+
+modelComparison <- matrix(c("59%", "75.82%", "79.12%", "79.1%", "80.2%", "81.31%",
+                            0.6839, 0.7387, 0.7169, 0.7481, 0.7487, 0.796), ncol=6, byrow=TRUE)
+rownames(modelComparison) <- c("Accuracy", "AUC/ROC")
+colnames(modelComparison) <- c("Naive Bayes", "Decision Tree", "Random Forest", "XG2", "SVM Model", "Bagging Model")

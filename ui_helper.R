@@ -12,9 +12,8 @@ source("predictiveModel_ui.R")
 source("references_ui.R")
 
 #Load in predictive model
+load(file = "z.Rdata")
 load(file = "baggingmodel.rda")
 
 #Load data
 data <- read.csv("Z-Alizadeh_sani_dataset.csv", header = TRUE)
-
-df <- data.frame(Age=0, Weight=0, Height=0, Sex="M")

@@ -1,73 +1,41 @@
-userInput = c(1,2,3,"M",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-              0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-              0,0,0,0,0,0,0,0,0,0,0)
-
-updateInput <- function(pos, val) {
-  userInput[pos] = val
-}
-
-#BMI
+#Derive BMI input
 calculateBMI <- function(w, h) {
   bmi = w/((h/100)^2)
   return(bmi)
 }
 
-#Obesity
+#Derive Obesity input
 isObese <- function(a) {
-  if (a) {
+  if (a >= 25.0) {
     return("Y")
   } else {
     return("N")
   }
 }
 
+#Derive Gender input
+getGender <- function(a) {
+  if (a == "Female") {
+    return("Fmale")
+  } else {
+    return(a)
+  }
+}
+
+#Derive Smoker value
+getSmokingStatus <- function(user_input, var_name) {
+  if (substr(user_input, 1, 2) == substr(var_name, 1, 2)) {
+    return(1)
+  } else {
+    return(0)
+  }
+}
+
 #DM
-
 #FH
-
 #<------Advanced Option------>#
-#CRF
-
 #CVA
-
-#Airway Disease
-airwayDisease = radioButtons(inputId="airwayDisease", label="Airway Disease:", choices=c("Yes", "No"))
-
-#Thyroid Disease
-thyroidDisease = radioButtons(inputId="thyroidDisease", label="Thyroid Disease:", choices=c("Yes", "No"))
-
 #DLP
-
-#Edema
-edema = radioButtons(inputId="edema", label="Edema:", choices=c("Yes", "No"))
-
-#Weak Peripheral Pulse
-weakPeripheralPulse = radioButtons(inputId="weakPeripheralPulse", label="Weak Peripheral Pulse:", choices=c("Yes", "No"))
-
-#Lung Rales
-lungRales = radioButtons(inputId="lungRales", label="Lung Rales:", choices=list("Yes", "No"))
-
-#Systolic Murmur
-systolicMurmur = radioButtons(inputId="systolicMurmur",label= "Systolic Murmur", choices=c("Yes", "No"))
-
-#Diastolic Murmur
-diastolicMurmur = radioButtons(inputId="diastolicMurmur", label="Diastolic Murmur", choices=c("Yes", "No"))
-
-#Function.Class
-chestPainType = radioButtons(inputId="chestPainType", label="Chest Pain Type:", choices=c("1", "2", "3", "4"))
-
-#Atypical
-atypical = radioButtons(inputId="atypical", label="Atypical:", choices=c("Yes", "No"))
-
-#Nonanginal
-nonanginal = radioButtons(inputId="nonanginal", label="Nonanginal:", choices=c("Yes", "No"))
-
-#Exertional.CP
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#LowTH.Ang
-#radioButtons("", "", choices=c("Yes", "No"))
-
 #Q.Wave
 #radioButtons("", "", choices=c("Yes", "No"))
 
