@@ -49,6 +49,7 @@ body <- dashboardBody(
       div(modelText),
       tags$br(),
       tableOutput('model_table'),
+      br(img(src="AUC.png", width="400")),
       h3("Enter the required information then click", tags$b('Get Results'), "to view your Heart Disease prediction."),
       h4("Select a model type below, for more detailed inputs, select the", tags$b('Advanced'), "option."),
       tags$br(),
