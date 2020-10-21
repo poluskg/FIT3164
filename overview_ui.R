@@ -1,19 +1,17 @@
-overviewText1 <- ("The prevalence of heart disease has been steadily increasing in recent years, and is
-now a leading cause of death, accounting for approximately 30% of deaths globally according to the World Health Organization. 
-While a range of presentations of heart disease have been identified, it is often 
-caused from a blockage of arteries due to a build-up of cholesterol and other fatty acids. 
-Medical research has focussed extensively on symptoms, predictors, and outcomes of heart disease, 
-identifying genetic, physiological, gender, ethnicity or behavioural variables which lead to unique
-outcomes in individual patients. These symptoms can arise from risk factors such as lack of exercise, poor
-diet, tobacco, underlying congenital defects, chronic health problems such as diabetes or inherited from 
-family members with histories of heart disease. Therefore, a large number of individuals throughout the 
-general population are at risk of developing heart disease, and research into its causes,
-treatments, and outcomes is of the utmost societal importance.")
+overviewText1 <- div(p(tags$b("Heart disease"), "is usually caused by a",
+                  tags$b("buildup of cholesterol and other fatty acids"),
+                  "in major arteries, and is relatively common outcome from one or more factors such as: obesity,
+                  diet, chronological age, smoking, congenital and chronic conditions and family history of cardiac disease. The prevalence of heart disease has also been increasing in recent years, now accounting for around",
+                  tags$b("30% of global deaths.")),
+                 p("Due to the large amount of risk factors, medical research has largely focussed on",
+                  tags$b("identifying unique predictors and outcomes"), "of heart disease, including: genetics,
+                  physiology, gender, ethnicity and behavious. As being able to identify and target specific risk factors can effectively improve patient outcomes and quality of life, this project delivers a",
+                  tags$b("statistical model to predict if one may have heart disease.")))
 
-overviewText2 <- ("The primary aim of this project is to use machine learning and other statistical
-techniques and algorithms to develop a predictive model to predict if an individual has
-coronary heart disease. This application aims to provide and educational tool for users to explore
-this deadly disease, as well as offer the opportunity for an informal diagnosis using predictive algorithms.")
-
-overviewText3 <- ("Disclaimer: The developers of this website are not medical professionals. All information provided
-including the predictive outcomes should be used purely for informative reasons and not replace formal medical diagnosis.")
+overviewText2 <- tags$br(div("This interactive application translates medical and statistical research into an",
+                  tags$b("accessible and user friendly exploration"), "of heart disease risks and outcomes in order 
+                  to promoteawareness and prevention of heart disease. This", tags$b("novel patient-centered approach"), 
+                  "allows one to explore and understand risks and symptoms of heart disease identified by our model and",
+                  tags$b("facilitate conversations and informed decision making"), 
+                  "between the user and appropriate medical professionals.",
+                  tags$br(em("This model is not a diagnostic tool, as it is outside the scope of knowledge of our development team, and therefore unethical to provide a medically sound tool."))))
