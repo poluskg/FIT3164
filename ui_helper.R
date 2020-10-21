@@ -5,6 +5,7 @@ require(psych)
 require(plotly)
 require(hash)
 require(stringr)
+require(tidyverse)
 
 source("overview_ui.R")
 source("dataOverview_ui.R")

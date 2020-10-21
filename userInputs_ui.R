@@ -53,6 +53,20 @@ getBBB <- function(bbb) {
   }
 }
 
+# convert VHD
+getVHD <- function(vhd) {
+  if (vhd=="Mild") {
+    return("mild")
+  } else if (vhd=="Moderate"){
+    return("Moderate")
+  } else if (vhd == "None"){
+    return("N")
+  } else if(vhd== "Severe"){
+      return("Severe")
+    }
+  }
+
+
 #DM
 #FH
 #<------Advanced Option------>#

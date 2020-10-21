@@ -8,16 +8,19 @@ modelComparison <- matrix(c("59%", "75.82%", "79.12%", "79.1%", "80.2%", "81.31%
 rownames(modelComparison) <- c("Accuracy", "AUC/ROC")
 colnames(modelComparison) <- c("Naive Bayes", "Decision Tree", "Random Forest", "XG2", "SVM Model", "Bagging Model")
 
+# change basic to HTN, typical.chest.pain, 
 basic <- div(
           column(4,
             div(sliderInput(inputId="userAge_basic", label="Select Age", min=30, max=100, value=50, step=1)),
             div(numericInput(inputId="userWeight_basic", label="Enter Weight (Kg)", value=35, min=35, max=400, step=1)),
-            div(numericInput(inputId="userHeight_basic", label="Enter Height (cm)", value=100, min=100, max=250, step=1))
+            div(numericInput(inputId="userHeight_basic", label="Enter Height (cm)", value=100, min=100, max=250, step=1)),
+            div(radioButtons(inputId="typicalchestpain_basic", label="Typical chest pain:", choices=c("Yes", "No")))
           ),
           column(4,
             div(radioButtons(inputId="userSex_basic", label="Sex:", choices=c("Male", "Female"), inline=T)),
             div(numericInput(inputId="userBP_basic", label="Enter Blood Pressure", value=60, min=60, max=200, step=1)),
-            div(numericInput(inputId="userPR_basic", label="Enter Heart Rate (BPM)", value=60, min=60, max=200, step=1))
+            div(numericInput(inputId="userPR_basic", label="Enter Heart Rate (BPM)", value=60, min=60, max=200, step=1)),
+            div(radioButtons(inputId="htn_basic", label="Hypertension:", choices=c("Yes", "No")))
           ),
           column(4,
             div(radioButtons(inputId="smoker_basic", label="Smoking Status:", choices=c("Current Smoker", "Ex Smoker", "Non Smoker")))
@@ -38,10 +41,7 @@ advanced <- div(
                div(numericInput(inputId="userHeight_advanced", label="Enter Height (cm)", value=100, min=100, max=250, step=1)),
                div(radioButtons(inputId="thyroidDisease", label="Thyroid Disease:", choices=c("Yes", "No"))),
                div(radioButtons(inputId="edema", label="Edema:", choices=c("Yes", "No"))),
-               div(radioButtons(inputId="weakPeripheralPulse", label="Weak Peripheral Pulse:", choices=c("Yes", "No"))),
-               div(radioButtons(inputId="dm_advanced", label="Diabetic", choices=c("Yes", "No"))),
-               div(radioButtons(inputId="lowTHAng_advanced", label="Early onset Angina:", choices=c("Yes", "No"))),
-               div(radioButtons(inputId="qWave_advanced", label="Normal Q Waves:", choices=c("Yes", "No")))
+               div(radioButtons(inputId="dm_advanced", label="Diabetic", choices=c("Yes", "No")))
              ),
              column(4,
                div(numericInput(inputId="userWeight_advanced", label="Enter Weight (Kg)", value=35, min=35, max=400, step=1)),
@@ -50,14 +50,12 @@ advanced <- div(
                div(radioButtons(inputId="systolicMurmur",label= "Systolic Murmur", choices=c("Yes", "No"))),
                div(radioButtons(inputId="diastolicMurmur", label="Diastolic Murmur", choices=c("Yes", "No"))),
                div(radioButtons(inputId="lungRales", label="Lung Rales:", choices=list("Yes", "No"))),
-               div(radioButtons(inputId="dlp_advanced", label="High Lipids:", choices=c("Yes", "No"))),
-               div(radioButtons(inputId="exertionalCP_advanced", label="Exertional Chest Pain:", choices=c("Yes", "No")))
+               div(radioButtons(inputId="dlp_advanced", label="High Lipids:", choices=c("Yes", "No")))
+               
              ),
              column(4,
                div(radioButtons(inputId="smoker_advanced", label="Smoking Status:", choices=c("Current Smoker", "Ex Smoker", "Non Smoker"))),
-               div(radioButtons(inputId="airwayDisease_advanced", label="Airway Disease:", choices=c("Yes", "No"))),
                div(radioButtons(inputId="atypical_advanced", label="Atypical Chest Pain:", choices=c("Yes", "No"))),
-               div(radioButtons(inputId="nonanginal_advanced", label="Nonanginal Chest Pain:", choices=c("Yes", "No"))),
                div(radioButtons(inputId="htn_advanced", label="Hypertension:", choices=c("Yes", "No"))),
                div(radioButtons(inputId="fh_advanced", label="Family History of Cardiac Disease:", choices=c("Yes", "No"))),
                div(radioButtons(inputId="crf_advanced", label="Kidney Failure:", choices=c("Yes", "No"))),
@@ -90,16 +88,16 @@ advanced <- div(
                     div(sliderInput(inputId="esr", label="Erythrocyte sedimentation rate mm/h:", min=1, max=100, value=19.5, step=0.2)),
                     div(sliderInput(inputId="hb", label="Hemoglobin g/dl:", min=8, max=18, value=13.1, step=0.1)),
                     div(sliderInput(inputId="k", label="Potassium mEq/lit:", min=3, max=7, value=4.2, step=0.1)),
-                    div(sliderInput(inputId="Na", label="Sodium mEq/lit:", min=120, max=160, value=100, step=141)),
-                    div(sliderInput(inputId="wbc", label="White blood cell cells/ml 3700–18,000:", min=3700, max=18000, value=7100, step=100)),
-                    div(sliderInput(inputId="lymph", label="Lymphocyte % 7–60:", min=5, max=60, value=31, step=1))
+                    div(sliderInput(inputId="Na", label="Sodium mEq/lit:", min=120, max=160, value=140, step=1)),
+                    div(sliderInput(inputId="wbc", label="White blood cell cells/ml:", min=3700, max=18000, value=7100, step=100)),
+                    div(sliderInput(inputId="lymph", label="Lymphocyte %:", min=5, max=60, value=31, step=1))
              ),
              column(4,
                     div(sliderInput(inputId="neut", label="Neutrophil %:", min=30, max=90, value=60, step=1)),
-                    div(sliderInput(inputId="plt", label="Platelet 1000/ml 25–742:", min=20, max=800, value=221, step=1)),
+                    div(sliderInput(inputId="plt", label="Platelet 1000/ml:", min=20, max=800, value=221, step=1)),
                     div(sliderInput(inputId="ef.tte", label="Ejection fraction %", min=10, max=60, value=47, step=1)),
                     div(radioButtons(inputId="region.rwma", label="Region with regional wall motion abnormality:", choices=c("0", "1", "2", "3", "4", "5"))),
-                    div(radioButtons(inputId="vhd", label="Valvular heart disease: Normal, mild, moderate, severe:", choices=c("Normal", "mild", "moderate", "severe")))
+                    div(radioButtons(inputId="vhd", label="Valvular heart disease: ", choices=c("None", "Mild", "Moderate", "Severe")))
              ),
              actionButton(
                inputId="getResults_advanced",
