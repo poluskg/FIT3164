@@ -7,12 +7,15 @@ library(plotly)
 
 attach(za)
 
+za_cont <- data.frame(ï..Age, Weight, Length, BMI, BP, PR, Function.Class, CR, TG, LDL,
+             HDL, BUN, ESR, HB, K, Na, WBC, Lymph)
+
 ####correlate####
-pearson_cor_func <- function(var1, var2) {
+pearson_cor_func <- function(variable1, variable2) {
   #correlate
-  cor_result <- cor.test(var1, var2, method = 'pearson')
+  cor_result <- cor.test(variable1, variable2, method = 'pearson')
   #make an interactive plot
-  fig <- plot_ly(data = za, x = var1, y = var2, type = 'scatter', text = ~paste('Variable 1:', var1, '<br>Variable 2:', var2), color = ~var1, size = ~var1)
+  fig <- plot_ly(data = za_cont, x = ~variable1, y = ~variable2, type = 'scatter', text = ~paste('Variable 1:', variable1, '<br>Variable 2:', variable2), size = ~variable1)
   #return results
   result_list <- list('result' = cor_result,'int_plot' = fig)
   return(result_list)
@@ -20,7 +23,7 @@ pearson_cor_func <- function(var1, var2) {
 
 
 #call it
-#tell user to select variable 1 and variable 2 (idk how to change some labels in function yet)
+#tell user to select variable 1 and variable 2
 pearson_cor_func(BP, PR)
 
 ####static/boring old plot it####

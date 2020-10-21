@@ -9,7 +9,7 @@ z <- read.csv('Z-Alizadeh_sani_dataset.csv')
 
 ####clean####
 
-za <- na.omit(za)
+za <- na.omit(z)
 
 head(za)
 summary(za)
