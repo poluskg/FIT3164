@@ -1,3 +1,5 @@
+attach(data)
+
 totalMales = sum(data$Sex == "Male")/303*100
 totalFemales = sum(data$Sex == "Fmale")/303*100
 

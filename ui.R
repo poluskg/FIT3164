@@ -27,8 +27,8 @@ body <- dashboardBody(
       column(3, valueBoxOutput("DataVarBox", width=100)),
       column(3, valueBoxOutput("DataMaleBox", width=100)),
       column(3, valueBoxOutput("DataFmaleBox", width=100)),
-      h3(p("To understand the data in more detail, select a variable to view its definition:")),
-      div(
+      tags$br(h3(p("To understand the data in more detail, select a variable to view its definition:")),
+        h4(
         selectInput("var",
           label = "Select a Variable:",
           choices = variablesList,
@@ -43,6 +43,21 @@ body <- dashboardBody(
                             }"
                           )
                 )
+      ),
+      tags$br(
+        h5(tags$b("Data Set Information:"),
+            tags$br("Each patient could be in two possible categories CAD or Normal. 
+            A patient is categorized as CAD, if his/her diameter narrowing is greater than or equal to 50%, 
+            and otherwise as Normal."),
+            tags$br(
+              tags$b("Attribute Information:"),
+              tags$br("The Z-Alizadeh Sani dataset contains the records of 303 patients, 
+              each of which have 54 features. The features are arranged in four groups: 
+              demographic, symptom and examination, ECG, and laboratory and echo features.")),
+              tags$br(em("Z.A.S. (2017, November 17). UCI Machine Learning Repository: Z-Alizadeh Sani Data Set.Https://Archive.Ics.Uci.Edu/Ml/Datasets/Z-Alizadeh+Sani. 
+                      https://archive.ics.uci.edu/ml/datasets/Z-Alizadeh+Sani"))
+        )
+      )
     ),
     tabItem("modellingProcess",
       h2("Generating the Predictive Model"),

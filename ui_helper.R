@@ -6,6 +6,8 @@ require(plotly)
 require(hash)
 require(stringr)
 require(tidyverse)
+require(ggplot2)
+require(ggpubr)
 
 source("overview_ui.R")
 source("dataOverview_ui.R")

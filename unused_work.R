@@ -58,3 +58,23 @@ fig <- fig %>%
     violingroupgap = 0,
     violinmode = 'overlay'
   )
+
+za_cont <- data.frame(Age, Weight, Length, BMI, BP, PR, CR, TG, LDL,
+                      HDL, BUN, ESR, HB, K, Na, WBC, Lymph)
+
+pearson_cor_func <- function(var_1, var_2) {
+  #correlate
+  cor_result <- cor.test(var_1, var_2, method = 'pearson')
+  #make an interactive plot
+  fig <- plot_ly(data = za_cont,
+                 x = ~var_1,
+                 y = ~var_2,
+                 type = 'scatter',
+                 text = ~paste('Variable 1:', var_1, '<br>Variable 2:', var_2), 
+                 size = ~var_1)
+  #return results
+  result_list <- list('result' = cor_result,'int_plot' = fig)
+  return(result_list)
+}
+
+pearson_cor_func(Age, Weight)
