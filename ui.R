@@ -48,17 +48,21 @@ body <- dashboardBody(
       h2("Generating the Predictive Model"),
       div(modelText),
       tags$br(),
-      tableOutput('model_table'),
-      tabsetPanel(
-        type="tabs",
-        tabPanel(tags$b("Naive Bayes"), tags$br(), nb_ui),
-        tabPanel(tags$b("Decision Tree"), tags$br(), dt_ui),
-        tabPanel(tags$b("Random Forest"), tags$br(), rf_ui),
-        tabPanel(tags$b("XG Boosting"), tags$br(), xgb_ui),
-        tabPanel(tags$b("SVM Model"), tags$br(), svm_ui),
-        tabPanel(tags$b("Bagging Model"), tags$br(), bgg_ui)
-      ),
-      ),
+      fluidRow(
+        column(7, tableOutput('model_table'),
+               tags$br(tabsetPanel(
+                 type="tabs",
+                 tabPanel(tags$b("Naive Bayes"), tags$br(), nb_ui),
+                 tabPanel(tags$b("Decision Tree"), tags$br(), dt_ui),
+                 tabPanel(tags$b("Random Forest"), tags$br(), rf_ui),
+                 tabPanel(tags$b("XG Boosting"), tags$br(), xgb_ui),
+                 tabPanel(tags$b("SVM Model"), tags$br(), svm_ui),
+                 tabPanel(tags$b("Bagging"), tags$br(), bag_ui)
+               ))
+              ),
+        column(5, align="center", img(src="AUC.png", height=300, width=475))
+      )
+    ),
     tabItem("predictiveModel",
       h2("Test the Predictive Model"),
       h3("Enter the required information then click", tags$b('Get Results'), "to view your Heart Disease prediction."),
