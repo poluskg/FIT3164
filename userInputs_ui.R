@@ -33,8 +33,8 @@ getSmokingStatus <- function(user_input, var_name) {
 }
 
 # Change Yes/No to 1 or 0
-changeValues<- function(htn_advanced){
-  if (htn_advanced=="Yes"){
+changeValues<- function(a){
+  if (a=="Yes"){
     return(1)
   }
   else{

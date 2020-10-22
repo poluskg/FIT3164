@@ -56,17 +56,12 @@ server <- function(input, output, session) {
       Length=as.numeric(input$userHeight_basic), 
       Sex=toString(getGender(input$userSex_basic)),
       BMI=calculateBMI(input$userWeight_basic, input$userHeight_basic),
-      DM=0,
-      HTN=as.numeric(changeValues(input$htn_basic)), 
+      DM=0, HTN=as.numeric(changeValues(input$htn_basic)), 
       Current.Smoker=as.numeric(getSmokingStatus(input$smoker_basic, "Current.Smoker")),
       Ex.Smoker=as.numeric(getSmokingStatus(input$smoker_basic, "Ex.Smoker")),
-      FH=0, 
-      Obesity=isObese(calculateBMI(input$userWeight_basic, input$userHeight_basic)),
-      CRF= "N",
-      CVA="N", Airway.disease= "N", Thyroid.Disease= "N", CHF= "N", DLP= "N",
-      BP=as.numeric(input$userBP_basic), 
-      PR=as.numeric(input$userPR_basic), 
-      Edema= 0,
+      FH=0, Obesity=isObese(calculateBMI(input$userWeight_basic, input$userHeight_basic)),
+      CRF= "N", CVA="N", Airway.disease= "N", Thyroid.Disease= "N", CHF= "N", DLP= "N",
+      BP=as.numeric(input$userBP_basic), PR=as.numeric(input$userPR_basic), Edema= 0, 
       Weak.Peripheral.Pulse= "N", Lung.rales= "N", Systolic.Murmur="N", Diastolic.Murmur="N",
       Typical.Chest.Pain= as.numeric(changeValues(input$typicalchestpain_basic)),
       Dyspnea= "Y", Function.Class=0, Atypical= "Y", Nonanginal= "N", 
@@ -89,10 +84,8 @@ server <- function(input, output, session) {
   )
   
   #Advanced Model Prediction
-  
   # set exertional.cp, lowth.ang and CHF to "N" as there was limited data for these variables
   # set CRF, airway.disease, weak.peripheral.pulse and poor.r.progression to 'N' (these variables were less important)
-  #
   observeEvent(input$getResults_advanced, {
     userDataAdvanced <- data.frame(
       Age=input$userAge_advanced, 
@@ -149,8 +142,7 @@ server <- function(input, output, session) {
       PLT= as.numeric(input$plt), 
       EF.TTE= as.numeric(input$ef.tte),  
       Region.RWMA=as.numeric(input$region.rwma), 
-      VHD=  getVHD(input$vhd) # this line makes it crash :O
-      
+      #VHD=getVHD(input$vhd) # this line makes it crash :O
     )
     names(userDataAdvanced) <- names(z[2,-56])
     userDataAdvanced <- rbind(z[2,-56], userDataAdvanced)
