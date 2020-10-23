@@ -19,7 +19,7 @@ getGender <- function(a) {
   if (a == "Female") {
     return("Fmale")
   } else {
-    return(a)
+    return("Male")
   }
 }
 
@@ -33,8 +33,8 @@ getSmokingStatus <- function(user_input, var_name) {
 }
 
 # Change Yes/No to 1 or 0
-changeValues<- function(htn_advanced){
-  if (htn_advanced=="Yes"){
+changeValues<- function(a){
+  if (a=="Yes"){
     return(1)
   }
   else{
@@ -65,61 +65,3 @@ getVHD <- function(vhd) {
       return("Severe")
     }
   }
-
-
-#DM
-#FH
-#<------Advanced Option------>#
-#CVA
-#DLP
-#Q.Wave
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#St.Elevation
-#adioButtons("", "", choices=c("Yes", "No"))
-
-#St.Depression
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#Tinversion
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#LVH
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#Poor.R.Progression
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#BBB
-
-#FBS
-
-#CR
-
-#TG
-
-#LDL
-
-#HDL
-
-#ESR
-
-#HB
-
-#Potassium (K)
-
-#Sodium (Na)
-
-#WBC
-
-#Lymph
-
-#Neut
-
-#PLT
-
-#EF.TTE
-
-#Region.RWMA
-
-#VHD
