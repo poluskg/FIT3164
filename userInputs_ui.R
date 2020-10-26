@@ -1,4 +1,21 @@
-#Derive BMI input
+##################################
+#
+# User Inputs for the UI
+# This file contains the functions that translate user inputs from the front end to
+# the data type that the model takes
+#
+# last update 26/10/2020
+#
+# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
+# FIT3164 group 3
+#
+##################################
+
+
+#Derive BMI from weight and height inputs
+# @param: w weight in kg
+# @param: h height in cm
+# @return: BMI (the body mass index calculated)
 calculateBMI <- function(w, h) {
   bmi = w/((h/100)^2)
   return(bmi)
@@ -6,6 +23,8 @@ calculateBMI <- function(w, h) {
 
 #Derive Obesity input
 # BMI of 30+ is obese (source: heart foundation)
+# @param: a bmi
+# @return: "Y" if obese, "N" if not obese
 isObese <- function(a) {
   if (a >= 30.0) {
     return("Y")
@@ -14,7 +33,9 @@ isObese <- function(a) {
   }
 }
 
-#Derive Gender input
+# Derive Gender input
+# @param: a the gender selected Male/Female
+# @return: Fmale if female and Male if male
 getGender <- function(a) {
   if (a == "Female") {
     return("Fmale")
@@ -23,7 +44,10 @@ getGender <- function(a) {
   }
 }
 
-#Derive Smoker value
+# Derive Smoker value
+# @param: user_input the input the user gave for smoker status
+# @param: var_name the variable name (Current smoker or ex smoker)
+# @return: 1 if they are in var_name, otherwise 0
 getSmokingStatus <- function(user_input, var_name) {
   if (substr(user_input, 1, 2) == substr(var_name, 1, 2)) {
     return(1)
@@ -33,8 +57,10 @@ getSmokingStatus <- function(user_input, var_name) {
 }
 
 # Change Yes/No to 1 or 0
-changeValues<- function(htn_advanced){
-  if (htn_advanced=="Yes"){
+# @param: a the users input ("Yes" or "No")
+# @return: 1 if yes or 0 if no
+changeValues<- function(a){
+  if (a=="Yes"){
     return(1)
   }
   else{
@@ -43,6 +69,8 @@ changeValues<- function(htn_advanced){
 }
 
 # convert BBB
+# @param: bbb the user input (Left, Right or None)
+# @return: LBBB if left, RBBB if right, N if none
 getBBB <- function(bbb) {
   if (substr(bbb, 1, 1) == "L") {
     return("LBBB")
@@ -54,6 +82,8 @@ getBBB <- function(bbb) {
 }
 
 # convert VHD
+# @param: vhd the user input for VHD (Mild, Moderate, None or Severe)
+# @return: mild if Mild, Moderate if Moderate, N if None, Severe if Severe
 getVHD <- function(vhd) {
   if (vhd=="Mild") {
     return("mild")
@@ -62,64 +92,6 @@ getVHD <- function(vhd) {
   } else if (vhd == "None"){
     return("N")
   } else if(vhd== "Severe"){
-      return("Severe")
-    }
+    return("Severe")
   }
-
-
-#DM
-#FH
-#<------Advanced Option------>#
-#CVA
-#DLP
-#Q.Wave
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#St.Elevation
-#adioButtons("", "", choices=c("Yes", "No"))
-
-#St.Depression
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#Tinversion
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#LVH
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#Poor.R.Progression
-#radioButtons("", "", choices=c("Yes", "No"))
-
-#BBB
-
-#FBS
-
-#CR
-
-#TG
-
-#LDL
-
-#HDL
-
-#ESR
-
-#HB
-
-#Potassium (K)
-
-#Sodium (Na)
-
-#WBC
-
-#Lymph
-
-#Neut
-
-#PLT
-
-#EF.TTE
-
-#Region.RWMA
-
-#VHD
+}
