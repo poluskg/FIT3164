@@ -53,6 +53,10 @@ load(file = "baggingmodel.rda")
 file.exists("Z-Alizadeh_sani_dataset.csv.R")
 data <- read.csv("Z-Alizadeh_sani_dataset.csv", header = TRUE)
 
+# data frame for the scatterplot on data overview
+za_cont <- data.frame(Age, Weight, Length, BMI, BP, PR, Function.Class, CR, TG, LDL,
+                      HDL, BUN, ESR, HB, K, Na, WBC, Lymph)
+
 
 #FILENAME: overview_ui.R
 #PURPOSE: Removes cluter from ui.R by storing text/text-style in separate file.
@@ -81,6 +85,8 @@ overviewText2 <- tags$br(div("This interactive application translates medical an
 #PURPOSE: Removes cluter from ui.R by storing text/text-style in separate file.
 #         Adhere to OOP development structure. Keep all relevant code for the
 #         Data Overview tab in the same file for simple code navigation.
+
+attach(data)
 
 #Calculate the total number of Males/Females using the original dataset
 totalMales = sum(data$Sex == "Male")/303*100
@@ -160,13 +166,14 @@ varDefinition = hash(variablesList, definitions)
 #FUNCTION: getDefinition
 #DESCRIPTION: Returns the corresponding definition for the selected variable. If no definition
 #             exists, the function will instead output an error message to the ui.
-#PARAMETER: Takes in a String value, 'var' which is a user selected input.
+# @param: Takes in a String value, 'var' which is a user selected input.
 getDefinition <- function(var){
   errorMessage = "Sorry, we couldn't find a definition for that."
   if(is.na(varDefinition[[var]]))
     return(errorMessage)
   else return(varDefinition[[var]])
 }
+# error message above is to satisfy robustness
 
 
 #FILENAME: modellingProcess_ui.R
@@ -182,9 +189,10 @@ modelComparison <- matrix(c("Accuracy", "59%", "75.82%", "79.12%", "79.1%", "80.
                             "AUC/ROC", 0.6839, 0.7387, 0.7169, 0.7481, 0.7487, 0.796),
                           ncol=7, byrow=TRUE)
 
+# Names of the models
 colnames(modelComparison) <- c(" ", "Naive Bayes", "Decision Tree", "Random Forest", "XG2", "SVM Model", "Bagging Model")
 
-#Define text/text-styles for each of the 6 models developed/tested for their corressponding side panel tab.
+#Define text/text-styles for each of the 6 models developed/tested for their corresponding side panel tab.
 nb_ui <- div(tags$b("Naive bayes using e1071"),
           tags$br("This algorithm uses Bayes rule to classify data.
           The algorithm predicts the probability that a given datapoint would belong in any particular category,
@@ -315,6 +323,7 @@ getVHD <- function(vhd) {
 #         Include placeholder values and input limits for each input.
 
 #Define the inputs which will appear with the 'basic' model selection.
+# The user inputs are forced to be within certain ranges to satisfy robustness
 basic <- fluidRow(
           column(4, h4(tags$b("General Information:")),
               numericInput(inputId="userAge_basic", label="Select Age", min=30, max=100, value=50, step=1),
@@ -415,9 +424,10 @@ advanced <- div(fluidRow(
 
 
 #FILENAME: references.R
-#PURPOSE: Removes cluter from ui.R by storing text/text-style in separate file.
+#PURPOSE: Removes clutter from ui.R by storing text/text-style in separate file.
 #         Adhere to OOP development structure.
 
+library(shiny)
 references <- div(
   tags$ul("Meyer, D., Dimitriadou, E., Hornik, K., Weingessel, A., & Leisch, F. (2019). e1071: Misc Functions of the Department of Statistics, Probability Theory Group (Formerly: E1071), TU Wien. R package version 1.7-3. https://CRAN.R-project.org/package=e1071"),
   tags$ul("Therneau, T., Atkinson, B., & Ripley, B. (2019). rpart: Recursive Partitioning and Regression Trees. R package version 4.1-15. https://CRAN.R-project.org/package=rpart"),
@@ -611,10 +621,31 @@ server <- function(input, output, session) {
     )
   })
   
+  # These are the reactive parts of the plotly scatterplot
+  x <- reactive({
+    za_cont[,input$xcol]
+  })
+  y <- reactive({
+    za_cont[,input$ycol]
+  })
+  
+  output$plot <- renderPlotly(
+    plot1 <- plot_ly(
+      x = x(),
+      y = y(),
+      type = 'scatter',
+      mode = 'markers') %>% layout(title="Scatterplot of Two Variables")
+  )
+  
   #Render the text for the getDefinition function which return the corressponding definition 
   #for the user-selected variable input.
   output$var_definition <- renderText({
       getDefinition(input$var)
+    }
+  )
+  
+    output$var_summary <- renderTable({
+      getVariableSummary(input$var)
     }
   )
   
@@ -648,8 +679,10 @@ server <- function(input, output, session) {
       BUN=17.5, ESR= 19.5, HB=13.1, K=4.2, Na= 141,WBC= 7562,  Lymph=31, Neut=60, PLT= 221, EF.TTE= 47, 
       Region.RWMA=0, VHD= "mild"
     )
+    
+    
     #Check that userDataBasic data frame has the same column names as the data frame required
-    # for the predictive model - z.
+    # for the predictive model - z is the dataset used to train the model.
     names(userDataBasic) <- names(z[2,-56])
     #Bind the two data frames together to be parsed through the model.
     userDataBasic <- rbind(z[2,-56], userDataBasic)
@@ -677,7 +710,7 @@ server <- function(input, output, session) {
       Length=as.numeric(input$userHeight_advanced), 
       Sex=getGender(input$userSex_advanced),
       BMI=calculateBMI(input$userWeight_advanced, input$userHeight_advanced),
-      DM=as.numeric(input$dm_advanced), 
+      DM=as.numeric(changeValues(input$dm_advanced)), 
       HTN=as.numeric(changeValues(input$htn_advanced)),
       Current.Smoker=as.numeric(getSmokingStatus(input$smoker_advanced, "Current.Smoker")),
       Ex.Smoker=as.numeric(getSmokingStatus(input$smoker_advanced, "Ex.Smoker")),
@@ -699,7 +732,7 @@ server <- function(input, output, session) {
       Typical.Chest.Pain= changeValues(input$typicalCP), 
       Dyspnea= str_sub(input$dyspnea, 1, 1),
       Function.Class=as.numeric(input$function_class), 
-      Atypical= str_sub(input$atypical, 1, 1), 
+      Atypical= str_sub(input$atypical_advanced, 1, 1), 
       Nonanginal= str_sub(input$nonanginal, 1, 1), 
       Exertional.CP="N", 
       LowTH.Ang= "N",
@@ -726,6 +759,7 @@ server <- function(input, output, session) {
       PLT= as.numeric(input$plt), 
       EF.TTE= as.numeric(input$ef.tte),  
       Region.RWMA=as.numeric(input$region.rwma), 
+      VHD=getVHD(input$vhd) 
     )
     #Same as basic model, compare data frame names, bind together and make prediction.
     names(userDataAdvanced) <- names(z[2,-56])
@@ -757,9 +791,9 @@ library(readxl)
 ```
 
 
-read in z alizedeh sani
+Read in z alizedeh sani dataset
 ```{r}
-z<- read_excel("Zdataset.xlsx", sheet=1)
+z<- read_excel("Z-Alizadeh_sani_dataset.xlsx", sheet=1)
 
 # column names are not working properly- change them
 names(z) <- make.names(names(z))
@@ -1302,3 +1336,397 @@ test_that("VHD",
           })
 ```
 
+#FILENAME: unusedcode.RMD
+#Purpose: all the unused parts of our code
+
+---
+title: "unusedcode"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The following code is not used for our project.
+
+# Data processing:
+
+Hungary data set
+```{r}
+
+# this is the 76 variable set
+h<-readtext("hungarian.data")
+h<- h[-1]
+
+#split rows
+h<-h %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+h<-h %>%
+  mutate(text = str_replace(text, "\n",""))
+
+h<-h %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+
+# we are not using this anymore so we will not save it
+#write.csv(h,'hungary_large.csv')
+hungarian<-h
+```
+
+Cleveland set
+```{r}
+# large set
+# this is the 76 variable set
+
+c<-readtext("cleveland.data")
+c<- c[-1]
+
+#split rows
+c<-c %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+c<-c %>%
+  mutate(text = str_replace(text, "\n",""))
+
+c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+
+#write.csv(c,'cleveland_large.csv')
+cleveland<-c
+```
+
+switzerland set
+```{r}
+# large set
+
+# this is the 76 variable set
+c<-readtext("switzerland.data")
+c<- c[-1]
+
+#split rows
+c<-c %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+c<-c %>%
+  mutate(text = str_replace(text, "\n",""))
+
+
+c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+#write.csv(c,'switzerland_large.csv')
+
+switzerland<-c
+```
+
+long beach set
+```{r}
+# large set
+
+# this is the  76 variable set
+
+c<-readtext("long-beach-va.data")
+c<- c[-1]
+
+#split rows
+c<-c %>% 
+  separate_rows(text, sep = "name")
+# split columns
+
+# remove \n from row2:
+c<-c %>%
+  mutate(text = str_replace(text, "\n",""))
+
+
+c<-c %>% separate(text, c("id","ccf", "age" ,"sex", "painloc" ,"painexer" ,"relrest" ,"pncaden" ,"cp", "trestbps","htn" , "chol","smoke" ,"cigs" , "years" ,"fbs", "dm" ,"famhist" ,"restecg", "ekgmo" ,"ekgday" , "ekgyr" ,"dig" ,"prop" ,"nitr" ,"pro" ,"diuretic" ,"proto" ,"thaldur" , "thaltime" ,"mets" ,"thalach","thalrest" ,"tpeaksbps" ,"tpeaksbpd" , "dummy" ,"trestbpd" ,"exang","xhypo" , "oldpeak", "slope", "r1dv5" ,"r1dv5e" ,"ca", "restckm" ,"exerckm" ,"restef" ,"restwm" ,"exeref", "exerwm"  ,"thal", "thalsev" , "thalpul" ,"earlobe" ,"cmo" ,"cday" ,"cyr" ,"num", "lmt" ,"ladprox" ,"laddist" , "diag" ,"cxmain" , "ramus" ,"om1" ,"om2" ,"rcaprox" ,"rcadist" ,"lvx1" ,"lvx2" ,"lvx3" ,"lvx4" ,"lvf" ,"cathef" ,"junk"))
+
+write.csv(c,'longbeach_large.csv')
+
+longbeach<-c
+```
+Intergrating the datasets:
+#Z sani set                4 data sets
+Typical.Chest.Pain        derive from cp value 1
+Atypical                  derive from cp value 2
+Age                       age
+HTN                       hypertension- blood pressure above 130/80 - 140/90mmgg(mayo clinic definition)
+                          I am making it trestbpd>80 AND trestbps>130 = YES
+BP                        blood pressure- most likely trestbps
+Current.Smoker            smoke 1 = yes; 0 = no 
+FBS                       fbs (fasting blood sugar > 120 mg/dl)  (1 = true; 0 = false)
+
+
+```{r}
+# Add all the extra data together
+
+other <- rbind(cleveland, switzerland)
+other<- rbind(other, longbeach)
+other<- rbind(other, hungarian)
+
+
+# delete repeated rows
+other<-distinct(other)
+
+# formatting
+other$id<-NULL
+other$ccf<-NULL
+other$painloc<-NULL
+other$dummy<-NULL
+other$lvx1<-NULL
+other$lvx2<-NULL
+other$lvx3<-NULL
+other$lvx4<-NULL
+other$cathef<-NULL
+other$junk<-NULL
+
+# change age to numeric, then delete incorrect rows
+other$age<- as.numeric(other$age)
+
+# change sex to factor form
+other$sex[other$sex == 1]<- "Male"
+other$sex[other$sex == 0]<- "Fmale"
+other$sex<-as.factor(other$sex)
+
+# change painexer
+# 9 is the NA value
+other$painexer[other$painexer == 9]<- NA
+# 1=Y 0=N
+other$painexer[other$painexer == 1]<- "Y"
+other$painexer[other$painexer == 0]<- "N"
+
+# rename some columns
+#HTN  =hypertension- blood pressure above 130/80 - 140/90mmgg(mayo clinic definition)
+
+other <- other %>% rename(Exertional.CP= painexer, Age=age, Sex=sex, HTN=htn)
+
+#Typical.Chest.Pain -derive from cp=value 1
+other$Typical.Chest.Pain <- 0
+other$Typical.Chest.Pain[other$cp == 1]<- 1
+
+# Atypical                  derive from cp value 2
+other$Atypical<- 0
+other$Atypical[other$cp == 2]<- 1
+
+#BP                        blood pressure- most likely trestbps
+other <- other %>% rename(BP=trestbps)
+#Current.Smoker            smoke 1 = yes; 0 = no 
+other <- other %>% rename(Current.Smoker=smoke)
+
+# Cath  Cad or Normal        =          num Value 0: < 50% diameter narrowing, Value 1: > 50% diameter narrowing
+# most of the num values are not 1 or 0? I am choosing to delete those rows
+other$Cath<- 0
+# if not 1 or 0 set to NA
+other$Cath[other$num>1]<-NA
+other$Cath[other$num==0]<- "Normal"
+other$Cath[other$num==1]<- "Cath"
+
+# select the columns of the other data sets to use
+suplementary<- other %>%select(Sex, Age, Exertional.CP, HTN, Atypical, Typical.Chest.Pain, BP, Current.Smoker, fbs, Cath)
+
+# change the z sani data set to the form in the comment above
+# fbs (fasting blood sugar > 120 mg/dl)  (1 = true; 0 = false)
+z2<-z
+z2$fbs<-0
+z2$fbs[z2$FBS>120]<-1
+
+
+# select the columns
+z3 <- select(z2, Sex, Age, Exertional.CP, HTN, Atypical, Typical.Chest.Pain, BP, Current.Smoker, fbs, Cath)
+# join the two sets
+# s=factor age=num ext=factor htn=num (change to fact) atyp=factor typ=num (change fac) bp=num current=factor fbs=num (fac) Cath=factor
+z3$HTN<-as.factor(z3$HTN)
+z3$Typical.Chest.Pain<- as.factor(z3$Typical.Chest.Pain)
+z3$fbs<- as.factor(z3$fbs)
+
+# supplementary sex remove invalid
+ 
+
+combined<- rbind(z3, suplementary)
+```
+We will not use these data sets as there are too many missing values and some important variables are not there.
+
+# Additional unused code relating to UI
+
+#Show variable summary on Data Overview page
+getVariableSummary <- function(var){
+  varName = variables[var]
+  value = eval(parse(text = varName))
+  # CHANGE FOR THOSE WITH NO MIN/MAX ELIGIBLE VALUES
+  variable_summary = data.frame("Min"=round(min(value), digits=2), "Max"=round(max(value), digits=2), "Mean"=round(mean(value), digits=2), "Median"=round(median(value), digits=2))
+  return(variable_summary)
+}
+
+#Static violin model showing gender distribution/HD
+fig <- data %>%
+  plot_ly(type = 'violin') 
+fig <- fig %>%
+  add_trace(
+    x = ~Cath[data$Sex == 'Male'],
+    y = ~Age[data$Sex == 'Male'],
+    ylim(0,1),
+    legendgroup = 'Yes',
+    scalegroup = 'Yes',
+    name = 'Male',
+    side = 'negative',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    color = I("blue")
+  ) 
+fig <- fig %>%
+  add_trace(
+    x = ~Cath[data$Sex == 'Fmale'],
+    y = ~Age[data$Sex == 'Fmale'],
+    ylim(0,1),
+    legendgroup = 'No',
+    scalegroup = 'No',
+    name = 'Female',
+    side = 'positive',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    color = I("green")
+  ) 
+
+fig <- fig %>%
+  layout(
+    xaxis = list(
+      title = ""  
+    ),
+    yaxis = list(
+      title = "",
+      zeroline = F
+    ),
+    violingap = 0,
+    violingroupgap = 0,
+    violinmode = 'overlay'
+  )
+
+#### original scatterplot of continuous variables ####
+za_cont <- data.frame(Age, Weight, Length, BMI, BP, PR, CR, TG, LDL,
+                      HDL, BUN, ESR, HB, K, Na, WBC, Lymph)
+
+pearson_cor_func <- function(var_1, var_2) {
+  #correlate
+  cor_result <- cor.test(var_1, var_2, method = 'pearson')
+  #make an interactive plot
+  fig <- plot_ly(data = za_cont,
+                 x = ~var_1,
+                 y = ~var_2,
+                 type = 'scatter',
+                 text = ~paste('Variable 1:', var_1, '<br>Variable 2:', var_2), 
+                 size = ~var_1)
+  #return results
+  result_list <- list('result' = cor_result,'int_plot' = fig)
+  return(result_list)
+}
+
+pearson_cor_func(Age, Weight)
+
+ggscatter(za, x = "Weight", y = "BMI", add = 'reg.line', 
+                       conf.int = TRUE, cor.coef = TRUE, cor.methods = 'pearson',
+                       xlab = 'Weight', ylab = 'BMI')
+
+#### original bar plot of binary variables, split between healthy and heart disease ####
+library(plotly)
+#library(dpylr)
+attach(za)
+
+yes_cath <- filter(za, Cath == 'Cad')
+no_cath <- filter(za, Cath == 'Normal')
+
+yes_small <- data.frame(yes_cath$DM,yes_cath$Current.Smoker,yes_cath$EX.Smoker,yes_cath$FH,yes_cath$Obesity,yes_cath$CRF,yes_cath$CVA,
+                       yes_cath$Airway.disease,yes_cath$Thyroid.Disease,yes_cath$CHF,yes_cath$DLP,yes_cath$Edema,yes_cath$Weak.Peripheral.Pulse,
+                      yes_cath$Lung.rales,yes_cath$Systolic.Murmur,yes_cath$Diastolic.Murmur,yes_cath$Typical.Chest.Pain,yes_cath$Dyspnea,
+                       yes_cath$Atypical,yes_cath$Nonanginal,yes_cath$Exertional.CP,yes_cath$LowTH.Ang,yes_cath$Q.Wave,yes_cath$St.Elevation,
+                       yes_cath$St.Depression,yes_cath$Tinversion,yes_cath$LVH,yes_cath$Poor.R.Progression,yes_cath$BBB)
+                        
+no_small <- data.frame(no_cath$DM,no_cath$Current.Smoker,no_cath$EX.Smoker,no_cath$FH,no_cath$Obesity,no_cath$CRF,no_cath$CVA,
+                       no_cath$Airway.disease,no_cath$Thyroid.Disease,no_cath$CHF,no_cath$DLP,no_cath$Edema,no_cath$Weak.Peripheral.Pulse,
+                       no_cath$Lung.rales,no_cath$Systolic.Murmur,no_cath$Diastolic.Murmur,no_cath$Typical.Chest.Pain,no_cath$Dyspnea,
+                       no_cath$Atypical,no_cath$Nonanginal,no_cath$Exertional.CP,no_cath$LowTH.Ang,no_cath$Q.Wave,no_cath$St.Elevation,
+                       no_cath$St.Depression,no_cath$Tinversion,no_cath$LVH,no_cath$Poor.R.Progression,no_cath$BBB)
+
+new <- merge(data.frame(yes_small, row.names = NULL), data.frame(no_small, row.names = NULL), by = 0, all = TRUE)[-1]
+
+Variables <- c('DM','Current.Smoker','EX.Smoker','FH','Obesity','CRF','CVA',
+          'Airway.disease','Thyroid.Disease','CHF','DLP','Edema','Weak.Peripheral.Pulse',
+          'Lung.rales','Systolic.Murmur','Diastolic.Murmur','Typical.Chest.Pain','Dyspnea',
+          'Atypical','Nonanginal','Exertional.CP','LowTH.Ang','Q.Wave','St.Elevation',
+          'St.Depression','Tinversion','LVH','Poor.R.Progression','BBB')
+
+yes_vars <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29)
+no_vars <- c(30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59)
+
+plot_data <- data.frame(vars, yes_vars, no_vars)
+fig <- plot_ly(plot_data, x = ~Variables, y = ~yes_vars, type = 'bar', name = 'Heart Disease')
+fig <- fig %>% add_trace(y = ~no_vars, name = 'Healthy')
+fig <- fig %>% layout(yaxis = list(title = 'Total Number'), barmode = 'group')
+
+fig
+
+#### testing regression + interaction models for some initial exploration ####
+#regression models
+library(ggplot2)
+library(car)
+library(QuantPsyc)
+library(lmSupport)
+library(psych)
+library(haven)
+library(rockchalk)
+
+#change cath to factor
+z$Cath<-as.factor(z$Cath)
+
+####simple model####
+#lm(dependent variable ~ independent variable)
+simple_reg <- lm(z$BP~z$Typical.Chest.Pain)
+
+par(mfrow = c(2,2))
+plot(simple_reg)
+
+dwt(simple_reg)
+
+summary(simple_reg, confint = TRUE)
+
+#plot with regression line using coefficients
+par(mfrow = c(1,1))
+plot(z$Typical.Chest.Pain, z$BP)
+abline(lm(z$BP~z$Typical.Chest.Pain))
+
+####interaction model####
+z$Cath <- to_factor(z$Cath)
+z$Cath <-as.numeric(z$Cath)
+
+interact_reg <- lm(Cath ~ BP*Typical.Chest.Pain, data = z)
+
+par(mfrow = c(2,2))
+plot(interact_reg)
+
+dwt(interact_reg)
+vif(interact_reg)
+
+summary(interact_reg, confint = TRUE)
+lm.beta(interact_reg)
+lm.sumSquares(interact_reg)
+
+#plot 
+par(mfrow = c(1,1))
+
+#library(sjPlot)
+#library(sjmisc)
+#theme_set(theme_sjplot())
+#plot_model(interact_reg, type = 'pred')
+
+plotSlopes(interact_reg, plotx = "BP", modx = "Typical.Chest.Pain", modxVals = "std.dev", main = 'simple slopes plot')
+
+#interaction.plot(z$BP, z$Typical.Chest.Pain, z$Cath)
