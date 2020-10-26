@@ -1,7 +1,8 @@
 #FILENAME: references.R
-#PURPOSE: Removes cluter from ui.R by storing text/text-style in separate file.
+#PURPOSE: Removes clutter from ui.R by storing text/text-style in separate file.
 #         Adhere to OOP development structure.
 
+library(shiny)
 references <- div(
   tags$ul("Meyer, D., Dimitriadou, E., Hornik, K., Weingessel, A., & Leisch, F. (2019). e1071: Misc Functions of the Department of Statistics, Probability Theory Group (Formerly: E1071), TU Wien. R package version 1.7-3. https://CRAN.R-project.org/package=e1071"),
   tags$ul("Therneau, T., Atkinson, B., & Ripley, B. (2019). rpart: Recursive Partitioning and Regression Trees. R package version 4.1-15. https://CRAN.R-project.org/package=rpart"),

@@ -1,18 +1,7 @@
-##################################
-#
-# Helper for the UI
-# This file opens the packages and other R files needed for the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: ui_helper.R
+#PURPOSE: To load in all required libraries/files on app configuration
 
-
-# require packages for UI
+#Load in all required libraries
 
 require(shiny)
 require(shinydashboard)
@@ -52,17 +41,18 @@ source("predictiveModel_ui.R")
 file.exists("references_ui.R")
 source("references_ui.R")
 
-#Load in predictive model
+#Load in predictive model & processed data
 file.exists("z.Rdata")
 load(file = "z.Rdata")
 
 file.exists("baggingmodel.rda")
 load(file = "baggingmodel.rda")
 
-#Load data
+#Load original data for static model use
 file.exists("Z-Alizadeh_sani_dataset.csv.R")
 data <- read.csv("Z-Alizadeh_sani_dataset.csv", header = TRUE)
 
+# data frame for the scatterplot on data overview
 za_cont <- data.frame(Age, Weight, Length, BMI, BP, PR, Function.Class, CR, TG, LDL,
                       HDL, BUN, ESR, HB, K, Na, WBC, Lymph)
 

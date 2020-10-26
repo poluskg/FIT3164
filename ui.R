@@ -1,18 +1,11 @@
-##################################
-#
-# Predictive model UI
-# This file creates the input buttons for the predictive model section of the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: ui.R
+#PURPOSE: The user interface file contains an object (ui) which controls the layout
+#         and appearance of the app.
 
+#Load in helper file which contains code for loading in all other files/libraries/data
 source("ui_helper.R")
 
+#Define overall design structure of app
 header <- dashboardHeader()
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -76,6 +69,7 @@ body <- dashboardBody(
         )
       )
     ),
+    #Define the Modelling Process page, accessible via the modellingProcess side tab
     tabItem("modellingProcess",
       h2("Generating the Predictive Model"),
       div(modelText),
@@ -92,9 +86,11 @@ body <- dashboardBody(
                  tabPanel(tags$b("Bagging"), tags$br(), bag_ui)
                ))
               ),
+        #Insert image of AUC plot.
         column(5, align="center", img(src="AUC.png", height=300, width=475))
       )
     ),
+    #Define the Predictive Model page, accessible via the predictiveModel side tab
     tabItem("predictiveModel",
       h2("Test the Predictive Model"),
       h3("Enter the required information then click", tags$b('Get Results'), "to view your Heart Disease prediction."),
@@ -102,17 +98,21 @@ body <- dashboardBody(
       h5(em("Note that for the advanced model, the user is required to have details about their general health,
          family history and blood test results.")),
       tags$br(),
+      #Insert horizontal tabs for model type toggling.
       tabsetPanel(
         type="tabs",
         tabPanel(tags$b("Basic"), tags$br(), basic),
         tabPanel(tags$b("Advanced"), tags$br(), advanced)
       ),
     ),
+    #Define the References page, accessible via the acknowledgements side tab
     tabItem("acknowledgements",
       div(h3("References")),
+      #Insert pre-defined text from references_ui.R
       tags$ul(references),
       tags$br(),
       div(h3("Contributors")),
+      #Define layout, insert image and make it a clickable link.
       fluidRow(
         column(4, align="center", a(img(src="cassieGit.png", height=200, width=200), href="https://github.com/Cassandra344")),
         column(4, align="center", a(img(src="juliaGit.png", height=200, width=200), href="https://github.com/juliapaterson")),
@@ -127,5 +127,6 @@ body <- dashboardBody(
   )
 )
 
+#Define the ui object which will be parsed through the server.
 ui <- dashboardPage(header, sidebar, body)
 

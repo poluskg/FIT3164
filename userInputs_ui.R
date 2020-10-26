@@ -1,15 +1,6 @@
-##################################
-#
-# User Inputs for the UI
-# This file contains the functions that translate user inputs from the front end to
-# the data type that the model takes
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: userInputs_ui.R
+#PURPOSE: Store all functions which take in user inputs from the predictive model page
+#         and derive values which are consistent with the model input requirements.  
 
 
 #Derive BMI from weight and height inputs
