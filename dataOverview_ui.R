@@ -1,21 +1,16 @@
-##################################
-#
-# Data Overview UI
-# This file creates the data overview page of the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: dataOverview_ui.R
+#PURPOSE: Removes cluter from ui.R by storing text/text-style in separate file.
+#         Adhere to OOP development structure. Keep all relevant code for the
+#         Data Overview tab in the same file for simple code navigation.
+
 
 attach(data)
 
+#Calculate the total number of Males/Females using the original dataset
 totalMales = sum(data$Sex == "Male")/303*100
 totalFemales = sum(data$Sex == "Fmale")/303*100
 
+#Create a list of all 56 variables in data
 variablesList = c(
   "Age", "Weight (kg)", "Height (cm)", "Sex", "BMI", "DM", "HTN", 
   "Current Smoker", "Ex Smoker", "FH", "Obesity", "CRF", "CVA", 
@@ -28,6 +23,7 @@ variablesList = c(
   "Neut", "PLT", "EF.TTE", "Region.RWMA", "VHD", "Cath"
 )
 
+#Create a list of all 56 variable definitions
 definitions = c("Age: The chronological age of the participant in years.",
                 "Weight: The weight of the participant in kilograms.",
                 "Height: The height of the participant in centimeters", 
@@ -84,10 +80,16 @@ definitions = c("Age: The chronological age of the participant in years.",
 
 varDefinition = hash(variablesList, definitions)
 
-# error message to satisfy robustness
+
+#FUNCTION: getDefinition
+#DESCRIPTION: Returns the corresponding definition for the selected variable. If no definition
+#             exists, the function will instead output an error message to the ui.
+# @param: Takes in a String value, 'var' which is a user selected input.
 getDefinition <- function(var){
   errorMessage = "Sorry, we couldn't find a definition for that."
   if(is.na(varDefinition[[var]]))
     return(errorMessage)
   else return(varDefinition[[var]])
 }
+# error message is to satisfy robustness
+

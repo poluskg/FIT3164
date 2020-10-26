@@ -1,18 +1,11 @@
-##################################
-#
-# Predictive model UI
-# This file creates the input buttons for the predictive model section of the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: ui.R
+#PURPOSE: The user interface file contains an object (ui) which controls the layout
+#         and appearance of the app.
 
+#Load in helper file which contains code for loading in all other files/libraries/data
 source("ui_helper.R")
 
+#Define overall design structure of app
 header <- dashboardHeader()
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -27,12 +20,14 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   tabItems(
+    #Define the Introduction page, accessible via the introduction side tab
     tabItem("introduction",
       h1("Predicting Heart Disease in Patients", align="center"),
       div(overviewText1),
       tags$br(HTML('<center><img src="heartImage.png" width="400"></center>')),
       tags$br(div(overviewText2, align="center"))
     ),
+    #Define the Data Overview page, accessible via the dataOverview side tab
     tabItem("dataOverview",
       h1("Overview"),
       h3("Below is a summary of the dataset used in this application:"),
@@ -48,6 +43,7 @@ body <- dashboardBody(
           selected = "Age"
         )
       ),
+      #Call server to render definition as text output and define output style.
       textOutput("var_definition"),
       tags$head(tags$style("#var_definition {
                            color: black;
@@ -55,8 +51,35 @@ body <- dashboardBody(
                            font-style: bold;
                             }"
                           )
-                )
+                ),
+      
+      # Information for scatterplot
+      tags$br(
+        h3("Interactive Scatterplot"),
+        h4("Included below is an interactive scatterplot, which plots two continous variables from the dataset against eachother to display the relationship between the variables. You can select the two variables - one for the x axis, and one for the y axis using the drop down menus.")),
+
+      tags$br(
+                  selectInput('xcol','X Variable', names(za_cont)),
+                  selectInput('ycol','Y Variable', names(za_cont)),
+                  selected = names(za_cont)[[2]]),
+      plotlyOutput('plot', width="50%", height="350px"), 
+      tags$br(
+        #Adjust text style - size/emphasis
+        h5(tags$b("Data Set Information:"),
+           tags$br("Each patient could be in two possible categories CAD or Normal. 
+            A patient is categorized as CAD, if his/her diameter narrowing is greater than or equal to 50%, 
+            and otherwise as Normal."),
+           tags$br(
+             tags$b("Attribute Information:"),
+             tags$br("The Z-Alizadeh Sani dataset contains the records of 303 patients, 
+              each of which have 54 features. The features are arranged in four groups: 
+              demographic, symptom and examination, ECG, and laboratory and echo features.")),
+           tags$br(em("Z.A.S. (2017, November 17). UCI Machine Learning Repository: Z-Alizadeh Sani Data Set.Https://Archive.Ics.Uci.Edu/Ml/Datasets/Z-Alizadeh+Sani. 
+                      https://archive.ics.uci.edu/ml/datasets/Z-Alizadeh+Sani"))
+        )
+      )
     ),
+    #Define the Modelling Process page, accessible via the modellingProcess side tab
     tabItem("modellingProcess",
       h2("Generating the Predictive Model"),
       div(modelText),
@@ -73,9 +96,11 @@ body <- dashboardBody(
                  tabPanel(tags$b("Bagging"), tags$br(), bag_ui)
                ))
               ),
+        #Insert image of AUC plot.
         column(5, align="center", img(src="AUC.png", height=300, width=475))
       )
     ),
+    #Define the Predictive Model page, accessible via the predictiveModel side tab
     tabItem("predictiveModel",
       h2("Test the Predictive Model"),
       h3("Enter the required information then click", tags$b('Get Results'), "to view your Heart Disease prediction."),
@@ -83,17 +108,21 @@ body <- dashboardBody(
       h5(em("Note that for the advanced model, the user is required to have details about their general health,
          family history and blood test results.")),
       tags$br(),
+      #Insert horizontal tabs for model type toggling.
       tabsetPanel(
         type="tabs",
         tabPanel(tags$b("Basic"), tags$br(), basic),
         tabPanel(tags$b("Advanced"), tags$br(), advanced)
       ),
     ),
+    #Define the References page, accessible via the acknowledgments side tab
     tabItem("acknowledgements",
       div(h3("References")),
+      #Insert pre-defined text from references_ui.R
       tags$ul(references),
       tags$br(),
       div(h3("Contributors")),
+      #Define layout, insert image and make it a clickable link.
       fluidRow(
         column(4, align="center", a(img(src="cassieGit.png", height=200, width=200), href="https://github.com/Cassandra344")),
         column(4, align="center", a(img(src="juliaGit.png", height=200, width=200), href="https://github.com/juliapaterson")),
@@ -108,5 +137,6 @@ body <- dashboardBody(
   )
 )
 
+#Define the ui object which will be parsed through the server.
 ui <- dashboardPage(header, sidebar, body)
 

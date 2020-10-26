@@ -1,17 +1,9 @@
-##################################
-#
-# Predictive model UI
-# This file creates the input buttons for the predictive model section of the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: predictiveModel_ui.R
+#PURPOSE: Store ui text/text-style for the two model types 'basic' and 'advanced'.
+#         Include placeholder values and input limits for each input
 
-# This code chunk creates the input buttons/sliders for the basic model
+
+#Define the inputs which will appear with the 'basic' model selection.
 # The user inputs are forced to be within certain ranges to satisfy robustness
 basic <- fluidRow(
           column(4, h4(tags$b("General Information:")),
@@ -37,8 +29,7 @@ basic <- fluidRow(
           tags$br(tags$b(textOutput("result_basic")))
         )
 
-# This code chunk creates the input buttons/sliders for the advanced model
-# The user inputs are forced to be within certain ranges to satisfy robustness
+#Define the inputs which will appear with the 'advanced' model selection.
 advanced <- div(fluidRow(
               column(4, h4(tags$b("General Information:")),
                sliderInput(inputId="userAge_advanced", label="Select Age", min=30, max=100, value=50, step=1),

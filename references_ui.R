@@ -1,15 +1,6 @@
-##################################
-#
-# References
-# This file contains our references for the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: references.R
+#PURPOSE: Removes clutter from ui.R by storing text/text-style in separate file.
+#         Adhere to OOP development structure.
 
 library(shiny)
 references <- div(

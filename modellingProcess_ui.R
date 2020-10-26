@@ -1,24 +1,13 @@
-##################################
-#
-# Modelling Process UI
-# This file creates the modelling process page of the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: modellingProcess_ui.R
+#PURPOSE: Store text/text-styles & table which appeear on the Model Process page.
 
 
-# Text at the top of th page
 modelText <- div("A range of models were generated, altered and tested against the dataset.
                  The resulting accuracy of these models can be viewed in the table below.
                  The final selected model - used for the prediction outcome on the next page - 
                  was the Bagging model, which has a predictive accuracy of 81.31%.")
 
-# Matrix to create the table
+#Create a table which displays the results of model testing completed during the development process.
 modelComparison <- matrix(c("Accuracy", "59%", "75.82%", "79.12%", "79.1%", "80.2%", "81.31%",
                             "AUC/ROC", 0.6839, 0.7387, 0.7169, 0.7481, 0.7487, 0.796),
                           ncol=7, byrow=TRUE)
@@ -26,7 +15,7 @@ modelComparison <- matrix(c("Accuracy", "59%", "75.82%", "79.12%", "79.1%", "80.
 # Names of the Models
 colnames(modelComparison) <- c(" ", "Naive Bayes", "Decision Tree", "Random Forest", "XG2", "SVM Model", "Bagging Model")
 
-# Information for each model
+#Define text/text-styles for each of the 6 models developed/tested for their corresponding side panel tab.
 nb_ui <- div(tags$b("Naive bayes using e1071"),
           tags$br("This algorithm uses Bayes rule to classify data.
           The algorithm predicts the probability that a given datapoint would belong in any particular category,

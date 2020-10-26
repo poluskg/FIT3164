@@ -1,24 +1,18 @@
-##################################
-#
-# Server for the UI
-# This file runs the server for the UI
-# 
-#
-# last update 26/10/2020
-#
-# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
-# FIT3164 group 3
-#
-##################################
+#FILENAME: server.R
+#PURPOSE: The server function contains the instructions which the computer needs to build 
+#         the app and compile all interactive components.
+
 
 server <- function(input, output, session) {
-  #DataOverview Page
+  #*****DATA OVERVIEW PAGE*****#
+  #Renders the 4 value boxes on the data-overview page, specifying colour/text-style.
   output$DataTotBox <- renderValueBox({
     valueBox(
       VB_style("303", "font-size: 60%;"),
       "Total Instances", 
       color = "blue"
     )
+    
   })
   
   output$DataVarBox <- renderValueBox({
@@ -29,6 +23,8 @@ server <- function(input, output, session) {
     )
   })
   
+  #DataMaleBox and DataFmaleBox take in the pre-calculated values totalMales/totalFemales from
+  #the dataOverview_ui.R file.
   output$DataMaleBox <- renderValueBox({
     valueBox(
       VB_style(paste0(format(round(totalMales, 1), nsmall=1), "%"), "font-size: 60%;"),
@@ -45,7 +41,25 @@ server <- function(input, output, session) {
     )
   })
   
-  #VariableImportance Page
+  # These are the reactive parts of the plotly scatterplot
+
+  x <- reactive({
+    za_cont[,input$xcol]
+  })
+  y <- reactive({
+    za_cont[,input$ycol]
+  })
+  
+  output$plot <- renderPlotly(
+    plot1 <- plot_ly(
+      x = x(),
+      y = y(),
+      type = 'scatter',
+      mode = 'markers') %>% layout(title="Correlation Scatterplot")
+  )
+  
+  #Render the text for the getDefinition function which return the corresponding definition 
+  #for the user-selected variable input.
   output$var_definition <- renderText({
       getDefinition(input$var)
     }
@@ -56,12 +70,16 @@ server <- function(input, output, session) {
     }
   )
   
-  #PredictiveModel Page
-  #Basic Model Prediction
+  #*****MODEL COMPARISON PAGE*****#
+  #Render the table which displays model accuracy/performance information
+  #defined in the modelComparison_ui.R file.
   output$model_table <- renderTable({
     modelComparison
   })
   
+  
+  #*****PREDICTIVE MODEL PAGE*****#
+  #Wait until user has entered in information and selected 'GET RESULTS' button.
   observeEvent(input$getResults_basic, {
     userDataBasic <- data.frame(
       Age=as.numeric(input$userAge_basic), 
@@ -83,10 +101,17 @@ server <- function(input, output, session) {
       BUN=17.5, ESR= 19.5, HB=13.1, K=4.2, Na= 141,WBC= 7562,  Lymph=31, Neut=60, PLT= 221, EF.TTE= 47, 
       Region.RWMA=0, VHD= "mild"
     )
+    
+    #Check that userDataBasic data frame has the same column names as the data frame required
+    # for the predictive model - z z is the dataset used to train the model.
     names(userDataBasic) <- names(z[2,-56])
+    #Bind the two data frames together to be parsed through the model
     userDataBasic <- rbind(z[2,-56], userDataBasic)
+    #Make prediction on user input against model and store in 'prediction' variable.
     prediction <- predict(bagmodel, userDataBasic[2,])
     
+    #Where the ui requests a text output, render the result of 'prediction' variable 
+    #with ifelse statement.
     output$result_basic <- renderText({
       ifelse(prediction=="Normal", 
         "Your test result is normal. You most likely do not have coronary artery disease, but please see a doctor if you have any concerns.",
@@ -157,10 +182,13 @@ server <- function(input, output, session) {
       Region.RWMA=as.numeric(input$region.rwma), 
       VHD=getVHD(input$vhd) 
     )
+    
+    #Same as basic model, compare data frame names, bind together and make prediction.
     names(userDataAdvanced) <- names(z[2,-56])
     userDataAdvanced <- rbind(z[2,-56], userDataAdvanced)
     prediction <- predict(bagmodel, userDataAdvanced[2,])
     
+    #Render output as text.
     output$result_advanced <- renderPrint({ 
       ifelse(prediction=="Normal", 
         "Your test result is normal. You most likely do not have coronary artery disease, but please see a doctor if you have any concerns.",
