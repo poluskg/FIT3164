@@ -1,5 +1,5 @@
 #FILENAME: ui_helper.R
-#PURPOSE: To load in all required libraries/files on app configuration
+#PURPOSE: To load in all required libraries/files on app configuration.
 
 #Load in all required libraries
 require(shiny)
@@ -62,31 +62,37 @@ za_cont <- data.frame(Age, Weight, Length, BMI, BP, PR, Function.Class, CR, TG, 
 #PURPOSE: Removes cluter from ui.R by storing text/text-style in separate file.
 #         Adhere to OOP development structure. Keep all relevant code for the
 #         Introduction tab in the same file for simple code navigation.
-overviewText1 <- div(p(tags$b("Heart disease"), "is usually caused by a",
-                  tags$b("buildup of cholesterol and other fatty acids"),
-                  "in major arteries, and is relatively common outcome from one or more factors such as: obesity,
-                  diet, chronological age, smoking, congenital and chronic conditions and family history of cardiac disease. The prevalence of heart disease has also been increasing in recent years, now accounting for around",
-                  tags$b("30% of global deaths.")),
+overviewText1 <- div(
+                  p(tags$b("Heart disease"), "is usually caused by a",
+                    tags$b("buildup of cholesterol and other fatty acids"),
+                    "in major arteries, and is relatively common outcome from one or more factors such as: obesity,
+                    diet, chronological age, smoking, congenital and chronic conditions and family history of cardiac disease. The prevalence of heart disease has also been increasing in recent years, now accounting for around",
+                    tags$b("30% of global deaths.")
+                  ),
                   p("Due to the large amount of risk factors, medical research has largely focussed on",
-                  tags$b("identifying unique predictors and outcomes"), "of heart disease, including: genetics,
-                  physiology, gender, ethnicity and behavious. As being able to identify and target specific risk factors can effectively improve patient outcomes and quality of life, this project delivers a",
-                  tags$b("statistical model to predict if one may have heart disease.")))
+                    tags$b("identifying unique predictors and outcomes"), "of heart disease, including: genetics,
+                    physiology, gender, ethnicity and behavious. As being able to identify and target specific risk factors can effectively improve patient outcomes and quality of life, this project delivers a",
+                    tags$b("statistical model to predict if one may have heart disease.")
+                  )
+                )
 
-overviewText2 <- tags$br(div("This interactive application translates medical and statistical research into an",
-                  tags$b("accessible and user friendly exploration"), "of heart disease risks and outcomes in order 
-                  to promoteawareness and prevention of heart disease. This", tags$b("novel patient-centered approach"), 
-                  "allows one to explore and understand risks and symptoms of heart disease identified by our model and",
-                  tags$b("facilitate conversations and informed decision making"), 
-                  "between the user and appropriate medical professionals.",
-                  tags$br(em("This model is not a diagnostic tool, as it is outside the scope of knowledge of our development team, and therefore unethical to provide a medically sound tool."))))
+overviewText2 <- tags$br(
+                  div("This interactive application translates medical and statistical research into an",
+                    tags$b("accessible and user friendly exploration"), "of heart disease risks and outcomes in order 
+                    to promoteawareness and prevention of heart disease. This", 
+                    tags$b("novel patient-centered approach"), 
+                    "allows one to explore and understand risks and symptoms of heart disease identified by our model and",
+                    tags$b("facilitate conversations and informed decision making"), 
+                    "between the user and appropriate medical professionals.",
+                    tags$br(em("This model is not a diagnostic tool, as it is outside the scope of knowledge of our development team, and therefore unethical to provide a medically sound tool."))
+                    )
+                  )
 
 
 #FILENAME: dataOverview_ui.R
 #PURPOSE: Removes cluter from ui.R by storing text/text-style in separate file.
 #         Adhere to OOP development structure. Keep all relevant code for the
 #         Data Overview tab in the same file for simple code navigation.
-
-attach(data)
 
 #Calculate the total number of Males/Females using the original dataset
 totalMales = sum(data$Sex == "Male")/303*100
@@ -163,22 +169,20 @@ definitions = c("Age: The chronological age of the participant in years.",
 #Create a hash table of variables and their respective definition
 varDefinition = hash(variablesList, definitions)
 
-#FUNCTION: getDefinition
-#DESCRIPTION: Returns the corresponding definition for the selected variable. If no definition
-#             exists, the function will instead output an error message to the ui.
+#getDefinition returns the corresponding definition for the selected variable. 
+#If no definition exists, the function will instead output an error message to the ui (satistfy robustness of app).
 # @param: Takes in a String value, 'var' which is a user selected input.
+# @return: Returns a String of text to the ui.
 getDefinition <- function(var){
   errorMessage = "Sorry, we couldn't find a definition for that."
   if(is.na(varDefinition[[var]]))
     return(errorMessage)
   else return(varDefinition[[var]])
 }
-# error message above is to satisfy robustness
 
 
 #FILENAME: modellingProcess_ui.R
 #PURPOSE: Store text/text-styles & table which appeear on the Model Process page.
-
 modelText <- div("A range of models were generated, altered and tested against the dataset.
                  The resulting accuracy of these models can be viewed in the table below.
                  The final selected model - used for the prediction outcome on the next page - 
@@ -500,11 +504,11 @@ body <- dashboardBody(
                           )
                 )
       ),
-    # Information for scatterplot
+      # Information for scatterplot
       tags$br(
         h3("Interactive Scatterplot"),
         h4("Included below is an interactive scatterplot, which plots two continous variables from the dataset against eachother to display the relationship between the variables. You can select the two variables - one for the x axis, and one for the y axis using the drop down menus.")),
-
+      # Insert scatterplot on page and let server know what to output - plotlyOutput('plot', ...)
       tags$br(
                   selectInput('xcol','X Variable', names(za_cont)),
                   selectInput('ycol','Y Variable', names(za_cont)),
@@ -594,6 +598,7 @@ ui <- dashboardPage(header, sidebar, body)
 #PURPOSE: The server function contains the instructions which the computer needs to build 
 #         the app and compile all interactive components.
 
+#The server function takes in input values for interactive components and renders the output type for a given session.
 server <- function(input, output, session) {
   #*****DATA OVERVIEW PAGE*****#
   #Renders the 4 value boxes on the data-overview page, specifying colour/text-style.
@@ -631,14 +636,14 @@ server <- function(input, output, session) {
     )
   })
   
-  # These are the reactive parts of the plotly scatterplot
+  # Reactive parts of the plotly scatterplot
   x <- reactive({
     za_cont[,input$xcol]
   })
   y <- reactive({
     za_cont[,input$ycol]
   })
-  
+  # Render the plot given the user selection
   output$plot <- renderPlotly(
     plot1 <- plot_ly(
       x = x(),
@@ -651,11 +656,6 @@ server <- function(input, output, session) {
   #for the user-selected variable input.
   output$var_definition <- renderText({
       getDefinition(input$var)
-    }
-  )
-  
-    output$var_summary <- renderTable({
-      getVariableSummary(input$var)
     }
   )
   
