@@ -1,4 +1,15 @@
-
+##################################
+#
+# Server for the UI
+# This file runs the server for the UI
+# 
+#
+# last update 26/10/2020
+#
+# Authors: Katie Polus, Julia Patterson and Cassandra Elliott
+# FIT3164 group 3
+#
+##################################
 
 server <- function(input, output, session) {
   #DataOverview Page
@@ -8,6 +19,7 @@ server <- function(input, output, session) {
       "Total Instances", 
       color = "blue"
     )
+    
   })
   
   output$DataVarBox <- renderValueBox({
@@ -33,6 +45,20 @@ server <- function(input, output, session) {
       color = "blue"
     )
   })
+  x <- reactive({
+    za_cont[,input$xcol]
+  })
+  y <- reactive({
+    za_cont[,input$ycol]
+  })
+  
+  output$plot <- renderPlotly(
+    plot1 <- plot_ly(
+      x = x(),
+      y = y(),
+      type = 'scatter',
+      mode = 'markers')
+  )
   
   #VariableImportance Page
   output$var_definition <- renderText({
@@ -58,17 +84,12 @@ server <- function(input, output, session) {
       Length=as.numeric(input$userHeight_basic), 
       Sex=toString(getGender(input$userSex_basic)),
       BMI=calculateBMI(input$userWeight_basic, input$userHeight_basic),
-      DM=0,
-      HTN=as.numeric(changeValues(input$htn_basic)), 
+      DM=0, HTN=as.numeric(changeValues(input$htn_basic)), 
       Current.Smoker=as.numeric(getSmokingStatus(input$smoker_basic, "Current.Smoker")),
       Ex.Smoker=as.numeric(getSmokingStatus(input$smoker_basic, "Ex.Smoker")),
-      FH=0, 
-      Obesity=isObese(calculateBMI(input$userWeight_basic, input$userHeight_basic)),
-      CRF= "N",
-      CVA="N", Airway.disease= "N", Thyroid.Disease= "N", CHF= "N", DLP= "N",
-      BP=as.numeric(input$userBP_basic), 
-      PR=as.numeric(input$userPR_basic), 
-      Edema= 0,
+      FH=0, Obesity=isObese(calculateBMI(input$userWeight_basic, input$userHeight_basic)),
+      CRF= "N", CVA="N", Airway.disease= "N", Thyroid.Disease= "N", CHF= "N", DLP= "N",
+      BP=as.numeric(input$userBP_basic), PR=as.numeric(input$userPR_basic), Edema= 0, 
       Weak.Peripheral.Pulse= "N", Lung.rales= "N", Systolic.Murmur="N", Diastolic.Murmur="N",
       Typical.Chest.Pain= as.numeric(changeValues(input$typicalchestpain_basic)),
       Dyspnea= "Y", Function.Class=0, Atypical= "Y", Nonanginal= "N", 
@@ -91,10 +112,8 @@ server <- function(input, output, session) {
   )
   
   #Advanced Model Prediction
-  
   # set exertional.cp, lowth.ang and CHF to "N" as there was limited data for these variables
   # set CRF, airway.disease, weak.peripheral.pulse and poor.r.progression to 'N' (these variables were less important)
-  #
   observeEvent(input$getResults_advanced, {
     userDataAdvanced <- data.frame(
       Age=input$userAge_advanced, 
@@ -102,7 +121,7 @@ server <- function(input, output, session) {
       Length=as.numeric(input$userHeight_advanced), 
       Sex=getGender(input$userSex_advanced),
       BMI=calculateBMI(input$userWeight_advanced, input$userHeight_advanced),
-      DM=as.numeric(input$dm_advanced), 
+      DM=as.numeric(changeValues(input$dm_advanced)), 
       HTN=as.numeric(changeValues(input$htn_advanced)),
       Current.Smoker=as.numeric(getSmokingStatus(input$smoker_advanced, "Current.Smoker")),
       Ex.Smoker=as.numeric(getSmokingStatus(input$smoker_advanced, "Ex.Smoker")),
@@ -124,7 +143,7 @@ server <- function(input, output, session) {
       Typical.Chest.Pain= changeValues(input$typicalCP), 
       Dyspnea= str_sub(input$dyspnea, 1, 1),
       Function.Class=as.numeric(input$function_class), 
-      Atypical= str_sub(input$atypical, 1, 1), 
+      Atypical= str_sub(input$atypical_advanced, 1, 1), 
       Nonanginal= str_sub(input$nonanginal, 1, 1), 
       Exertional.CP="N", 
       LowTH.Ang= "N",
@@ -151,8 +170,7 @@ server <- function(input, output, session) {
       PLT= as.numeric(input$plt), 
       EF.TTE= as.numeric(input$ef.tte),  
       Region.RWMA=as.numeric(input$region.rwma), 
-      VHD=  getVHD(input$vhd) # this line makes it crash :O
-      
+      VHD=getVHD(input$vhd) 
     )
     names(userDataAdvanced) <- names(z[2,-56])
     userDataAdvanced <- rbind(z[2,-56], userDataAdvanced)

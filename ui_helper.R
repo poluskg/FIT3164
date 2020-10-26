@@ -63,3 +63,6 @@ load(file = "baggingmodel.rda")
 file.exists("Z-Alizadeh_sani_dataset.csv.R")
 data <- read.csv("Z-Alizadeh_sani_dataset.csv", header = TRUE)
 
+za_cont <- data.frame(Age, Weight, Length, BMI, BP, PR, Function.Class, CR, TG, LDL,
+                      HDL, BUN, ESR, HB, K, Na, WBC, Lymph)
+
