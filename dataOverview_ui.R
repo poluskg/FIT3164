@@ -3,7 +3,8 @@
 #         Adhere to OOP development structure. Keep all relevant code for the
 #         Data Overview tab in the same file for simple code navigation.
 
-
+#********RUN THIS LINE**********
+data<- list()
 attach(data)
 
 #Calculate the total number of Males/Females using the original dataset

@@ -36,7 +36,7 @@ rf_ui <- div(tags$b("Random Forest"),
           tags$br("Reference (Breiman, Cutler, Liaw & Wiener, 2018).)"))
 xgb_ui <- div(tags$b("Xgboost"),
               tags$br("The boosting classification algorithm is an ensemble method  generates many small, 
-              ‘weak’ classifications of the data, and then 'learns' from previous failed classifications 
+              'weak' classifications of the data, and then 'learns' from previous failed classifications 
               to improve. In R, this was implemented using the gbm and XGBoost packages."),
               tags$br("Reference (Greenwell, Boehmke & Cunningham, 2019) (Chen et al., 2019)"))
 svm_ui <- div(tags$b("SVM Model"),
