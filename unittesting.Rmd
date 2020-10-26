@@ -1,0 +1,112 @@
+---
+title: "unittesting"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Unit Testing
+
+
+Load all the functions from the user interface
+```{r}
+#setwd("~/fit3164/webapp/")
+#source("userInputs_ui.R")
+library(testthat)
+```
+
+Unit testing for calculateBMI
+This will test the accuracy of the calculateBMI function, by comparing the outputs of the function to expected BMI
+inputs: calculateBMI() function, 
+        these weight/height combinations: (118, 167), (124.6, 217), (49.88472,153.7757)
+expected output: No output if all the tests are correct
+
+```{r}
+
+test_that("BMI of user",
+          { expect_equal(calculateBMI(118, 167), 42.310588404)
+            expect_equal(calculateBMI(124.6, 217), 26.4605321837)
+            expect_equal(calculateBMI(49.88472,153.7757),21.0956112462)
+
+          })
+```
+
+Unit testing for isObese
+This will test the accuracy of the isObese function, by comparing the outputs of the function to expected output
+inputs: isObese() function, 
+        these BMIs: 42, 30, 29.5, 26
+expected output: No output if all the tests are correct
+```{r}
+test_that("Obesity of user",
+          { expect_equal(isObese(42), "Y")
+            expect_equal(isObese(30), "Y")
+            expect_equal(isObese(29.5),"N")
+            expect_equal(isObese(26),"N")
+
+          })
+```
+
+
+Unit testing for getGender
+This will test the accuracy of the getGender function, by comparing the outputs of the function to expected gender
+inputs: getGender() function, 
+        "Female"
+        "Male"
+expected output: No output if all the tests are correct
+```{r}
+test_that("Gender of user",
+          { expect_equal(getGender("Female"), "Fmale")
+            expect_equal(getGender("Male"), "Male")
+
+          })
+```
+
+Unit testing for changeValues
+This will test the accuracy of the changeValues function, by comparing the outputs of the function to expected output
+inputs: changeValues() function, 
+        "Yes"
+        "No"
+expected output: No output if all the tests are correct
+```{r}
+test_that("Changing values",
+          { expect_equal(changeValues("Yes"), 1)
+            expect_equal(changeValues("No"), 0)
+
+          })
+```
+
+Unit testing for getBBB
+This will test the accuracy of the getBBB function, by comparing the outputs of the function to expected output
+inputs: getBBB() function, 
+        "Left"
+        "Right"
+        "None"
+expected output: No output if all the tests are correct
+```{r}
+test_that("BBB",
+          { expect_equal(getBBB("Left"), "LBBB")
+            expect_equal(getBBB("None"), "N")
+            expect_equal(getBBB("Right"), "RBBB")
+
+          })
+```
+
+Unit testing for getVHD
+This will test the accuracy of the getVHD function, by comparing the outputs of the function to expected output
+inputs: getVHD() function 
+        "Mild"
+        "Moderate"
+        "None"
+        "Severe"
+expected output: No output if all the tests are correct
+```{r}
+test_that("VHD",
+          { expect_equal(getVHD("Mild"), "mild")
+            expect_equal(getVHD("None"), "N")
+            expect_equal(getVHD("Moderate"), "Moderate")
+            expect_equal(getVHD("Severe"), "Severe")
+
+          })
+```

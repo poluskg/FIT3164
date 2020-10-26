@@ -1,0 +1,66 @@
+---
+title: "data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(readtext)
+library(stringr)
+library(readxl)
+```
+
+
+read in z alizedeh sani
+```{r}
+z<- read_excel("Zdataset.xlsx", sheet=1)
+
+# column names are not working properly- change them
+names(z) <- make.names(names(z))
+
+
+# change z ali sani chr to factor
+z$Sex<-as.factor(z$Sex)
+z$Current.Smoker<-as.factor(z$Current.Smoker)
+z$EX.Smoker<-as.factor(z$EX.Smoker)
+z$Cath<-as.factor(z$Cath)
+z$Obesity <-as.factor(z$Obesity)
+z$CRF <-as.factor(z$CRF)
+z$CVA <-as.factor(z$CVA)
+z$Airway.disease <-as.factor(z$Airway.disease)
+z$Thyroid.Disease <-as.factor(z$Thyroid.Disease)
+z$CHF <-as.factor(z$CHF)
+z$DLP <-as.factor(z$DLP)
+z$Weak.Peripheral.Pulse <-as.factor(z$Weak.Peripheral.Pulse)
+z$Lung.rales <-as.factor(z$Lung.rales)
+z$Systolic.Murmur <-as.factor(z$Systolic.Murmur)
+z$Diastolic.Murmur <-as.factor(z$Diastolic.Murmur)
+z$Dyspnea <-as.factor(z$Dyspnea)
+z$Atypical <-as.factor(z$Atypical)
+z$Nonanginal <-as.factor(z$Nonanginal)
+z$Exertional.CP <-as.factor(z$Exertional.CP)
+z$LowTH.Ang <-as.factor(z$LowTH.Ang)
+z$LVH <-as.factor(z$LVH)
+z$Poor.R.Progression <-as.factor(z$Poor.R.Progression)
+z$BBB <-as.factor(z$BBB)
+z$VHD <-as.factor(z$VHD)
+
+
+# make test and training set
+set.seed(1111) #random seed   
+train.row = sample(1:nrow(z), 0.7*nrow(z))  
+data.train = z[train.row,]  
+data.test = z[-train.row,]
+
+
+```
+
+
+
+```{r}
+save(z, file="z.Rdata")
+
+```
+
