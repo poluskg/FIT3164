@@ -11,12 +11,13 @@
 #
 ##################################
 
-# change basic to HTN, typical.chest.pain, 
+# This code chunk creates the input buttons/sliders for the basic model
+# The user inputs are forced to be within certain ranges to satisfy robustness
 basic <- fluidRow(
           column(4, h4(tags$b("General Information:")),
               numericInput(inputId="userAge_basic", label="Select Age", min=30, max=100, value=50, step=1),
-              numericInput(inputId="userWeight_basic", label="Enter Weight (Kg)", value=35, min=35, max=400, step=1),
-              numericInput(inputId="userHeight_basic", label="Enter Height (cm)", value=100, min=100, max=250, step=1),
+              numericInput(inputId="userWeight_basic", label="Enter Weight (Kg)", value=73, min=35, max=400, step=1),
+              numericInput(inputId="userHeight_basic", label="Enter Height (cm)", value=164, min=100, max=250, step=1),
               radioButtons(inputId="userSex_basic", label="Sex:", choices=c("Male", "Female"), inline=T),
               radioButtons(inputId="smoker_basic", label="Smoking Status:", choices=c("Current Smoker", "Ex Smoker", "Non Smoker"))
           ),
@@ -36,11 +37,13 @@ basic <- fluidRow(
           tags$br(tags$b(textOutput("result_basic")))
         )
 
+# This code chunk creates the input buttons/sliders for the advanced model
+# The user inputs are forced to be within certain ranges to satisfy robustness
 advanced <- div(fluidRow(
               column(4, h4(tags$b("General Information:")),
                sliderInput(inputId="userAge_advanced", label="Select Age", min=30, max=100, value=50, step=1),
-               numericInput(inputId="userWeight_advanced", label="Enter Weight (Kg)", value=35, min=35, max=400, step=1),
-               numericInput(inputId="userHeight_advanced", label="Enter Height (cm)", value=100, min=100, max=250, step=1),
+               numericInput(inputId="userWeight_advanced", label="Enter Weight (Kg)", value=73, min=35, max=400, step=1),
+               numericInput(inputId="userHeight_advanced", label="Enter Height (cm)", value=164, min=100, max=250, step=1),
                radioButtons(inputId="userSex_advanced", label="Sex:", choices=c("Male", "Female"), inline=T),
                radioButtons(inputId="smoker_advanced", label="Smoking Status:", choices=c("Current Smoker", "Ex Smoker", "Non Smoker"))
               ),
@@ -74,8 +77,8 @@ advanced <- div(fluidRow(
                 sliderInput(inputId="bun", label="Blood urea nitrogen mg/dl:", min=5, max=60, value=16, step=1)
               ),
               column(4, h4(tags$b("Heart Health Information:")),
-                numericInput(inputId="userBP_advanced", label="Enter Blood Pressure", value=60, min=60, max=200, step=1),
-                numericInput(inputId="userPR_advanced", label="Enter Heart Rate (BPM)", value=60, min=60, max=200, step=1),
+                numericInput(inputId="userBP_advanced", label="Enter Blood Pressure", value=129, min=60, max=200, step=1),
+                numericInput(inputId="userPR_advanced", label="Enter Heart Rate (BPM)", value=75, min=60, max=200, step=1),
                 radioButtons(inputId="diastolicMurmur", label="Diastolic Murmur", choices=c("Yes", "No")),
                 radioButtons(inputId="systolicMurmur",label= "Systolic Murmur", choices=c("Yes", "No")),
                 radioButtons(inputId="htn_advanced", label="Hypertension:", choices=c("Yes", "No")),
