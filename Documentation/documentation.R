@@ -482,8 +482,8 @@ body <- dashboardBody(
       column(3, valueBoxOutput("DataVarBox", width=100)),
       column(3, valueBoxOutput("DataMaleBox", width=100)),
       column(3, valueBoxOutput("DataFmaleBox", width=100)),
-      tags$br(h3(p("To understand the data in more detail, select a variable to view its definition:")),
-        h4(
+      h3(p("To understand the data in more detail, select a variable to view its definition:")),
+      div(
         selectInput("var",
           label = "Select a Variable:",
           choices = variablesList,
@@ -500,6 +500,16 @@ body <- dashboardBody(
                           )
                 )
       ),
+    # Information for scatterplot
+      tags$br(
+        h3("Interactive Scatterplot"),
+        h4("Included below is an interactive scatterplot, which plots two continous variables from the dataset against eachother to display the relationship between the variables. You can select the two variables - one for the x axis, and one for the y axis using the drop down menus.")),
+
+      tags$br(
+                  selectInput('xcol','X Variable', names(za_cont)),
+                  selectInput('ycol','Y Variable', names(za_cont)),
+                  selected = names(za_cont)[[2]]),
+      plotlyOutput('plot', width="50%", height="350px"), 
       tags$br(
         #Adjust text style - size/emphasis
         h5(tags$b("Data Set Information:"),
@@ -554,7 +564,7 @@ body <- dashboardBody(
         tabPanel(tags$b("Advanced"), tags$br(), advanced)
       ),
     ),
-    #Define the References page, accessible via the acknowledgements side tab
+    #Define the References page, accessible via the acknowledgments side tab
     tabItem("acknowledgements",
       div(h3("References")),
       #Insert pre-defined text from references_ui.R
@@ -634,7 +644,7 @@ server <- function(input, output, session) {
       x = x(),
       y = y(),
       type = 'scatter',
-      mode = 'markers') %>% layout(title="Scatterplot of Two Variables")
+      mode = 'markers') %>% layout(title="Correlation Scatterplot")
   )
   
   #Render the text for the getDefinition function which return the corressponding definition 
