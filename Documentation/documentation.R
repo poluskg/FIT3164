@@ -13,19 +13,44 @@ require(tidyverse)
 require(ggplot2)
 require(ggpubr)
 
-#Load in all required files
+
+# VB_style is a function that is used to display the boxes
+# @param: msg the sting that will be displayed
+# @param: style the font size of the string
+# @return: format of the message and style needed by the UI
+VB_style <- function(msg = 'Hello', style="font-size: 100%;"){
+  tags$p( msg , style = style )
+}
+
+# source all the R code needed
+# check the files exist to satisfy robustness
+file.exists("overview_ui.R")
 source("overview_ui.R")
+
+file.exists("dataOverview_ui.R")
 source("dataOverview_ui.R")
-source("modellingProcess_ui.R")
+
+file.exists("userInputs_ui.R")
 source("userInputs_ui.R")
+
+file.exists("modellingProcess_ui.R")
+source("modellingProcess_ui.R")
+
+file.exists("predictiveModel_ui.R")
 source("predictiveModel_ui.R")
+
+file.exists("references_ui.R")
 source("references_ui.R")
 
 #Load in predictive model & processed data
+file.exists("z.Rdata")
 load(file = "z.Rdata")
+
+file.exists("baggingmodel.rda")
 load(file = "baggingmodel.rda")
 
 #Load original data for static model use
+file.exists("Z-Alizadeh_sani_dataset.csv.R")
 data <- read.csv("Z-Alizadeh_sani_dataset.csv", header = TRUE)
 
 
@@ -201,7 +226,10 @@ bag_ui <- div(tags$b("Bagging Model"),
 #PURPOSE: Store all functions which take in user inputs from the predictive model page
 #         and derive values which are consistent with the model input requirements.  
 
-#Derive BMI input
+#Derive BMI from weight and height inputs
+# @param: w weight in kg
+# @param: h height in cm
+# @return: BMI (the body mass index calculated)
 calculateBMI <- function(w, h) {
   bmi = w/((h/100)^2)
   return(bmi)
@@ -209,6 +237,8 @@ calculateBMI <- function(w, h) {
 
 #Derive Obesity input
 # BMI of 30+ is obese (source: heart foundation)
+# @param: a bmi
+# @return: "Y" if obese, "N" if not obese
 isObese <- function(a) {
   if (a >= 30.0) {
     return("Y")
@@ -217,7 +247,9 @@ isObese <- function(a) {
   }
 }
 
-#Derive Gender input
+# Derive Gender input
+# @param: a the gender selected Male/Female
+# @return: Fmale if female and Male if male
 getGender <- function(a) {
   if (a == "Female") {
     return("Fmale")
@@ -226,7 +258,10 @@ getGender <- function(a) {
   }
 }
 
-#Derive Smoker value
+# Derive Smoker value
+# @param: user_input the input the user gave for smoker status
+# @param: var_name the variable name (Current smoker or ex smoker)
+# @return: 1 if they are in var_name, otherwise 0
 getSmokingStatus <- function(user_input, var_name) {
   if (substr(user_input, 1, 2) == substr(var_name, 1, 2)) {
     return(1)
@@ -236,6 +271,8 @@ getSmokingStatus <- function(user_input, var_name) {
 }
 
 # Change Yes/No to 1 or 0
+# @param: a the users input ("Yes" or "No")
+# @return: 1 if yes or 0 if no
 changeValues<- function(a){
   if (a=="Yes"){
     return(1)
@@ -246,6 +283,8 @@ changeValues<- function(a){
 }
 
 # convert BBB
+# @param: bbb the user input (Left, Right or None)
+# @return: LBBB if left, RBBB if right, N if none
 getBBB <- function(bbb) {
   if (substr(bbb, 1, 1) == "L") {
     return("LBBB")
@@ -257,6 +296,8 @@ getBBB <- function(bbb) {
 }
 
 # convert VHD
+# @param: vhd the user input for VHD (Mild, Moderate, None or Severe)
+# @return: mild if Mild, Moderate if Moderate, N if None, Severe if Severe
 getVHD <- function(vhd) {
   if (vhd=="Mild") {
     return("mild")
@@ -265,10 +306,9 @@ getVHD <- function(vhd) {
   } else if (vhd == "None"){
     return("N")
   } else if(vhd== "Severe"){
-      return("Severe")
-    }
+    return("Severe")
   }
-
+}
 
 #FILENAME: predictiveModel_ui.R
 #PURPOSE: Store ui text/text-style for the two model types 'basic' and 'advanced'.
@@ -278,15 +318,15 @@ getVHD <- function(vhd) {
 basic <- fluidRow(
           column(4, h4(tags$b("General Information:")),
               numericInput(inputId="userAge_basic", label="Select Age", min=30, max=100, value=50, step=1),
-              numericInput(inputId="userWeight_basic", label="Enter Weight (Kg)", value=35, min=35, max=400, step=1),
-              numericInput(inputId="userHeight_basic", label="Enter Height (cm)", value=100, min=100, max=250, step=1),
+              numericInput(inputId="userWeight_basic", label="Enter Weight (Kg)", value=73, min=35, max=400, step=1),
+              numericInput(inputId="userHeight_basic", label="Enter Height (cm)", value=164, min=100, max=250, step=1),
               radioButtons(inputId="userSex_basic", label="Sex:", choices=c("Male", "Female"), inline=T),
               radioButtons(inputId="smoker_basic", label="Smoking Status:", choices=c("Current Smoker", "Ex Smoker", "Non Smoker"))
           ),
           column(4, h4(tags$b("Heart and Chest Information:")),
               radioButtons(inputId="typicalchestpain_basic", label="Typical chest pain:", choices=c("Yes", "No")),
-              numericInput(inputId="userBP_basic", label="Enter Blood Pressure", value=60, min=60, max=200, step=1),
-              numericInput(inputId="userPR_basic", label="Enter Heart Rate (BPM)", value=60, min=60, max=200, step=1),
+              numericInput(inputId="userBP_basic", label="Enter Blood Pressure", value=129, min=60, max=200, step=1),
+              numericInput(inputId="userPR_basic", label="Enter Heart Rate (BPM)", value=75, min=60, max=200, step=1),
               radioButtons(inputId="htn_basic", label="Hypertension:", choices=c("Yes", "No"))
           ),
           div(
@@ -303,8 +343,8 @@ basic <- fluidRow(
 advanced <- div(fluidRow(
               column(4, h4(tags$b("General Information:")),
                sliderInput(inputId="userAge_advanced", label="Select Age", min=30, max=100, value=50, step=1),
-               numericInput(inputId="userWeight_advanced", label="Enter Weight (Kg)", value=35, min=35, max=400, step=1),
-               numericInput(inputId="userHeight_advanced", label="Enter Height (cm)", value=100, min=100, max=250, step=1),
+               numericInput(inputId="userWeight_advanced", label="Enter Weight (Kg)", value=73, min=35, max=400, step=1),
+               numericInput(inputId="userHeight_advanced", label="Enter Height (cm)", value=164, min=100, max=250, step=1),
                radioButtons(inputId="userSex_advanced", label="Sex:", choices=c("Male", "Female"), inline=T),
                radioButtons(inputId="smoker_advanced", label="Smoking Status:", choices=c("Current Smoker", "Ex Smoker", "Non Smoker"))
               ),
@@ -702,3 +742,563 @@ server <- function(input, output, session) {
     }
   )
 }
+
+#FILENAME: data.Rmd
+#PURPOSE: To alter the Z Alizedeh Sani dataset into a usable format
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# load the packages
+library(tidyverse)
+library(readtext)
+library(stringr)
+library(readxl)
+```
+
+
+read in z alizedeh sani
+```{r}
+z<- read_excel("Zdataset.xlsx", sheet=1)
+
+# column names are not working properly- change them
+names(z) <- make.names(names(z))
+
+
+# change z ali sani chr to factor
+z$Sex<-as.factor(z$Sex)
+z$Current.Smoker<-as.factor(z$Current.Smoker)
+z$EX.Smoker<-as.factor(z$EX.Smoker)
+z$Cath<-as.factor(z$Cath)
+z$Obesity <-as.factor(z$Obesity)
+z$CRF <-as.factor(z$CRF)
+z$CVA <-as.factor(z$CVA)
+z$Airway.disease <-as.factor(z$Airway.disease)
+z$Thyroid.Disease <-as.factor(z$Thyroid.Disease)
+z$CHF <-as.factor(z$CHF)
+z$DLP <-as.factor(z$DLP)
+z$Weak.Peripheral.Pulse <-as.factor(z$Weak.Peripheral.Pulse)
+z$Lung.rales <-as.factor(z$Lung.rales)
+z$Systolic.Murmur <-as.factor(z$Systolic.Murmur)
+z$Diastolic.Murmur <-as.factor(z$Diastolic.Murmur)
+z$Dyspnea <-as.factor(z$Dyspnea)
+z$Atypical <-as.factor(z$Atypical)
+z$Nonanginal <-as.factor(z$Nonanginal)
+z$Exertional.CP <-as.factor(z$Exertional.CP)
+z$LowTH.Ang <-as.factor(z$LowTH.Ang)
+z$LVH <-as.factor(z$LVH)
+z$Poor.R.Progression <-as.factor(z$Poor.R.Progression)
+z$BBB <-as.factor(z$BBB)
+z$VHD <-as.factor(z$VHD)
+
+
+# make test and training set
+set.seed(1111) #random seed for reproducability
+train.row = sample(1:nrow(z), 0.7*nrow(z))  
+data.train = z[train.row,]  
+data.test = z[-train.row,]
+
+```
+
+```{r}
+# save the data for easy access
+save(z, file="z.Rdata")
+
+```
+
+#FILENAME: models.Rmd
+#PURPOSE: To create and test different predictive models
+
+---
+title: "models"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Loading the packages
+library(tidyverse)
+library(readtext)
+library(stringr)
+library(rpart)
+library(adabag)
+library(randomForest)
+library(gbm)
+library(xgboost)
+library(ipred)
+library(pROC)
+library(e1071)
+```
+
+## models.Rmd
+
+These models use the z alizadehsani set.
+
+Separate testing and training data
+```{r}
+load("z.Rdata")
+
+set.seed(1111) #random seed  
+
+# 70% of the data is training, 30% is testing
+train.row = sample(1:nrow(z), 0.7*nrow(z))  
+data.train = z[train.row,]  
+data.test = z[-train.row,]
+
+```
+
+# Naive Bayes
+Implement a Naive bayes model using the e1071 package.
+Inputs: data.train data set, data.test data set
+outputs: naiveb the naive bayes model
+         nb_predictions the predicted outcomes of the data.test set
+         a confusion matrix of the results
+```{r}
+library(e1071)
+
+naiveb<- naiveBayes(Cath~., data=data.train)
+
+# predict outcome of the test data set
+nb_Predictions=predict(naiveb,data.test)
+
+#Confusion matrix to check accuracy
+table(nb_Predictions,data.test$Cath)
+
+# Calculate area under the ROC curve
+roc_nb <- roc(as.numeric(data.test$Cath), as.numeric(nb_Predictions))
+auc(roc_nb)
+
+plot.roc(roc_nb)
+
+```
+59% accuracy
+Area under the curve: 0.6839
+
+# decision tree
+Implement a decision tree using the rpart package.
+Inputs: data.train data set, data.test data set
+outputs: tree the tree model
+         nb_predictions the predicted outcomes of the data.test set
+         a confusion matrix of the results
+```{r}
+
+tree<- rpart(Cath~., data.train, method="class")
+
+tree
+
+plot(tree)
+text(tree)
+
+set.seed(1234)
+
+tree_prediction<- predict(tree, data.test, type = "class")
+table(actual	=	data.test$Cath,	predicted	=	tree_prediction)
+
+# Area under ROC curve
+roc_tree <- roc(as.numeric(data.test$Cath), as.numeric(tree_prediction))
+auc(roc_tree)
+```
+
+75.82% accuracy
+Area under the curve: 0.7387
+
+
+
+
+## Random Forest 
+
+```{r}
+set.seed(1234)
+forest<- randomForest(as.factor(Cath)~., data = data.train, ntree=1000)
+
+forest
+
+table(actual	=	data.test$Cath,	predicted	=	predict(forest, data.test))
+
+
+# Area under ROC curve
+roc_rf <- roc(as.numeric(data.test$Cath), as.numeric(predict(forest, data.test)))
+auc(roc_rf)
+```
+
+79.12% accurate 
+Area under the curve: 0.7169
+
+
+##XG boost
+
+```{r}
+xg.train<-data.train
+xg.test<- data.test
+
+# XG boost takes a matrix of numeric values, so these variables need to be changed
+# to numeric
+xg.train$Obesity <-as.numeric(xg.train$Obesity)
+xg.train$CRF <-as.numeric(xg.train$CRF)
+xg.train$CVA <-as.numeric(xg.train$CVA)
+xg.train$Airway.disease <-as.numeric(xg.train$Airway.disease)
+xg.train$Thyroid.Disease <-as.numeric(xg.train$Thyroid.Disease)
+xg.train$CHF <-as.numeric(xg.train$CHF)
+xg.train$DLP <-as.numeric(xg.train$DLP)
+xg.train$Weak.Peripheral.Pulse <-as.numeric(xg.train$Weak.Peripheral.Pulse)
+xg.train$Lung.rales <-as.numeric(xg.train$Lung.rales)
+xg.train$Systolic.Murmur <-as.numeric(xg.train$Systolic.Murmur)
+xg.train$Diastolic.Murmur <-as.numeric(xg.train$Diastolic.Murmur)
+xg.train$Dyspnea <-as.numeric(xg.train$Dyspnea)
+xg.train$Atypical <-as.numeric(xg.train$Atypical)
+xg.train$Nonanginal <-as.numeric(xg.train$Nonanginal)
+xg.train$Exertional.CP <-as.numeric(xg.train$Exertional.CP)
+xg.train$LowTH.Ang <-as.numeric(xg.train$LowTH.Ang)
+xg.train$LVH <-as.numeric(xg.train$LVH)
+xg.train$Poor.R.Progression <-as.numeric(xg.train$Poor.R.Progression)
+xg.train$BBB <-as.numeric(xg.train$BBB)
+xg.train$VHD <-as.numeric(xg.train$VHD)
+xg.train$Sex <-as.numeric(xg.train$Sex)
+xg.train$Current.Smoker <-as.numeric(xg.train$Current.Smoker)
+xg.train$Cath <-as.numeric(xg.train$Cath)
+
+# to numeric
+xg.test$Obesity <-as.numeric(xg.test$Obesity)
+xg.test$CRF <-as.numeric(xg.test$CRF)
+xg.test$CVA <-as.numeric(xg.test$CVA)
+xg.test$Airway.disease <-as.numeric(xg.test$Airway.disease)
+xg.test$Thyroid.Disease <-as.numeric(xg.test$Thyroid.Disease)
+xg.test$CHF <-as.numeric(xg.test$CHF)
+xg.test$DLP <-as.numeric(xg.test$DLP)
+xg.test$Weak.Peripheral.Pulse <-as.numeric(xg.test$Weak.Peripheral.Pulse)
+xg.test$Lung.rales <-as.numeric(xg.test$Lung.rales)
+xg.test$Systolic.Murmur <-as.numeric(xg.test$Systolic.Murmur)
+xg.test$Diastolic.Murmur <-as.numeric(xg.test$Diastolic.Murmur)
+xg.test$Dyspnea <-as.numeric(xg.test$Dyspnea)
+xg.test$Atypical <-as.numeric(xg.test$Atypical)
+xg.test$Nonanginal <-as.numeric(xg.test$Nonanginal)
+xg.test$Exertional.CP <-as.numeric(xg.test$Exertional.CP)
+xg.test$LowTH.Ang <-as.numeric(xg.test$LowTH.Ang)
+xg.test$LVH <-as.numeric(xg.test$LVH)
+xg.test$Poor.R.Progression <-as.numeric(xg.test$Poor.R.Progression)
+xg.test$BBB <-as.numeric(xg.test$BBB)
+xg.test$VHD <-as.numeric(xg.test$VHD)
+xg.test$Sex <-as.numeric(xg.test$Sex)
+xg.test$Current.Smoker <-as.numeric(xg.test$Current.Smoker)
+xg.test$Cath <-as.numeric(xg.test$Cath)
+# make into a matrix
+xg.train<- data.matrix(xg.train)
+xg.test<-data.matrix(xg.test)
+Cath<- as.numeric(data.train$Cath)
+
+
+```
+
+This is the first xgboost using linear regression, then classifying each prediction as Cath or not Cath with split on 0.5
+```{r}
+xg<- xgboost(data=xg.train[,-56], label = Cath, max.depth=6, nrounds = 25)
+
+
+importance <- xgb.importance(feature_names = colnames(xg.train), model = xg)
+importance
+
+pred <- predict(xg, xg.test[,-56])
+prediction <- as.numeric(pred > 1.5)
+err <- mean(as.numeric(pred > 1.5) != xg.test[,56]-1)
+print(paste("test-error=", err))
+
+# for Cath column 1= Cad, 2=Normal
+
+table(actual	=	xg.test[,56]-1,	predicted	=	prediction)
+```
+73.6% accuracy. This Xgboost probably is not the best model because it does not estimate binary variables.
+
+This Xgboost uses binary/logistic regression:
+```{r}
+Cath=Cath-1
+xg2<- xgboost(data=xg.train[,-56], label = Cath, max.depth=4, nrounds = 25, objective = "binary:logistic")
+
+
+importance <- xgb.importance(feature_names = colnames(xg.train), model = xg2)
+importance
+
+pred <- predict(xg2, xg.test[,-56])
+prediction <- as.numeric(pred > 0.50)
+
+table(actual	=	xg.test[,56]-1,	predicted	=	prediction)
+
+
+
+
+roc_xg <- roc(xg.test[,56]-1, prediction)
+auc(roc_xg)
+```
+76.9% accuracy for max.depth=6, nround=25
+75.8% accuracy for max.depth=7, nround=25
+75.8% accuracy for max.depth=7, nround=50
+79.1% accuracy for max.depth=4/3, nround=25
+
+Area under ROC curve= 0.7481
+
+# SVM 
+SVM model
+```{r}
+
+
+# SVM takes a matrix
+# also remove  CHR ,Exertional.CP , LowTH.Ang
+svm.train<-data.train[ -c(16, 30, 31) ]
+svm.test<-data.test[ -c(16, 30, 31) ]
+svm.train<- data.matrix(svm.train)
+svm.test<-data.matrix(svm.test)
+
+# this is the model
+svmmodel<-svm(Cath~., data=svm.train)
+
+# predict the test set
+pred<-predict(svmmodel, svm.test)
+prediction <- as.numeric(pred > 1.5)
+table(actual	=	xg.test[,56]-1,	predicted	=	prediction)
+
+roc_svm <- roc(xg.test[,56]-1, prediction)
+auc(roc_svm)
+```
+80.2% accurate
+
+area under ROC curve 0.7487
+
+
+```{r}
+library("ISLR")
+library("tree")
+
+tree.2 = tree(Cath~., data=data.train)
+cv.tree = cv.tree(tree.2, FUN = prune.misclass)
+
+plot(cv.tree)
+```
+```{r}
+# pick tree size=11
+prune.tree2 = prune.misclass(tree.2, best = 11)
+plot(prune.tree2)
+text(prune.tree2, pretty=0)
+
+treep<- predict(prune.tree2, data.test, type = "class")
+table(actual	=	data.test$Cath,	predicted	=	treep)
+
+roc_obj <- roc(as.numeric(data.test$Cath),as.numeric(treep))
+auc(roc_obj)
+```
+70.3% accuracy
+AUC ROC 0.6737
+
+# Bagging
+```{r}
+set.seed(12345)
+
+bagmodel<-bagging(Cath~., data=data.train, m = 5, ntree = 1000, mtry = NULL, trace = T)
+
+
+bagpred<- predict(bagmodel, data.test)
+table(actual	=	data.test$Cath,	predicted	=	bagpred)
+
+roc_bag <- roc(as.numeric(data.test$Cath),as.numeric(bagpred))
+auc(roc_bag)
+
+save(bagmodel, file="baggingmodel.rda")
+```
+81.31% Accuracy
+Area under the curve: 0.796
+
+
+
+
+# variable importance
+```{r}
+# tree
+tree$variable.importance
+
+# boosting
+boost$importance
+
+# random forest
+forest$importance
+
+
+```
+
+## Testing Results
+The models are:
+- naiveb: Naive bayes using e1071
+- tree: simple rpart decision tree
+- forest: random forest 
+- xg2: Xgboost 79.1% accuracy for max.depth=4/3, nround=25
+- svmmodel: SVM 80.2% accuracy 
+- bagmodel: Bagging using multiple classification trees
+
+
+Model       Accuracy        AUC ROC
+naiveb      59%             0.6839
+tree        75.82%          0.7387
+forest      79.12%          0.7169
+xg2         79.1%           0.7481
+svmmodel    80.2%           0.7487
+bagmodel    81.31%          0.796
+
+
+# Making Predictions
+This is a prototype of the function to create predictions in the final web application. It takes inputs from the user and uses the best model (bagging) to predict Cad or Normal.
+Inputs: bagmodel, the bagging model
+        age1, weight1, length1, bmi1 the user inputs
+Outputs: Cad statement or Normal statement
+```{r}
+# load the model
+load(file = "baggingmodel.rda")
+
+# Ask for inputs
+
+print("Please enter the following details")
+age1 <- readline(prompt="Age: ")
+weight1<-readline(prompt="Weight: ")
+length1<-readline(prompt="Height in cm: ")
+bmi1<-readline(prompt="BMI: ")
+
+# means from FBS
+
+userdata<-data.frame(Age=as.numeric(age1), Weight=as.numeric(weight1), Length=as.numeric(length1), Sex= "Male", BMI=as.numeric(bmi1), DM=0, HTN=0, Current.Smoker= "0", Ex.Smoker="1", FH=0, Obesity= "N", CRF= "N", CVA="N", Airway.disease= "N", Thyroid.Disease= "N", CHF= "N", DLP= "N", BP=as.numeric(140), PR=as.numeric(70), Edema= 0, Weak.Peripheral.Pulse= "N", Lung.rales= "N", Systolic.Murmur= "N", Diastolic.Murmur="N", Typical.Chest.Pain= 0, Dyspnea= "Y", Function.Class=0, Atypical= "Y", Nonanginal= "N", Exertional.CP="N", LowTH.Ang= "N", Q.Wave=0, St.Elevation=0, St.Depression= 0, Tinversion= 0, LVH= "N", Poor.R.Progression= "N", BBB="LBBB", FBS= 119, CR=1, TG=150, LDL=105, HDL=40.2,  BUN=17.5, ESR= 19.5, HB=13.1, K=4.2, Na= 141,WBC= 7562,  Lymph=31, Neut=60, PLT= 221, EF.TTE= 47, Region.RWMA=0, VHD= "mild")
+
+# make sure column names are the same
+names(userdata) <- names(z[2,-56])
+
+# bind the row of user data to one row from the original data set so that it inherits the factor levels
+userdata<-rbind(z[2,-56], userdata)
+
+# predict the outcome
+prediction<-predict(bagmodel, userdata[2,])
+
+# Print Response
+ifelse(prediction=="Normal", "Your test result is normal. You most likely do not have coronary artery disease, but please see a doctor if you have any concerns.", "Your test result is Coronary artery disease. Please note that this test is not 100% accurate, and you can only be diagnosed by a medical professional.")
+```
+
+Exertional.CP , LowTH.Ang and CHF don't have enough variation in the training set, so all have been set to N (the training mean for each one is N).
+
+# AUC ROC
+This makes the area under the ROC curve graph in the web app
+inputs: roc_nb ROC of naive bayes model
+        roc_rf ROC of random forest model
+        roc_xg ROC of random xg boost model
+        roc_bag ROC of bagging model
+        roc_svm ROC of SVM model
+output: Graph of AUC of ROC for each model
+```{r}
+plot(roc_nb, col = "blue", xlim=c(1,0))
+lines(roc_tree, col="dark green")
+lines(roc_rf, col="yellow")
+lines(roc_xg, col="navy")
+lines(roc_bag, col="red")
+lines(roc_svm, col="green")
+legend(0, 0.4, legend=c("Naive Bayes", "Decision Tree", "Random Forest", "Xgboost", "Bagging", "SVM"),
+       col=c("blue", "dark green", "yellow", "navy", "red", "green"), lty=1, cex=0.8)
+title("Area Under ROC Curve")
+```
+
+#FILENAME: unittesting.RMD
+#Purpose: to test the functions
+
+Load all the functions from the user interface
+```{r}
+#setwd("~/fit3164/webapp/")
+source("userInputs_ui.R")
+library(testthat)
+```
+
+Unit testing for calculateBMI
+This will test the accuracy of the calculateBMI function, by comparing the outputs of the function to expected BMI
+inputs: calculateBMI() function, 
+        these weight/height combinations: (118, 167), (124.6, 217), (49.88472,153.7757)
+expected output: No output if all the tests are correct
+
+```{r}
+
+test_that("BMI of user",
+          { expect_equal(calculateBMI(118, 167), 42.310588404)
+            expect_equal(calculateBMI(124.6, 217), 26.4605321837)
+            expect_equal(calculateBMI(49.88472,153.7757),21.0956112462)
+
+          })
+```
+
+Unit testing for isObese
+This will test the accuracy of the isObese function, by comparing the outputs of the function to expected output
+inputs: isObese() function, 
+        these BMIs: 42, 30, 29.5, 26
+expected output: No output if all the tests are correct
+```{r}
+test_that("Obesity of user",
+          { expect_equal(isObese(42), "Y")
+            expect_equal(isObese(30), "Y")
+            expect_equal(isObese(29.5),"N")
+            expect_equal(isObese(26),"N")
+
+          })
+```
+
+
+Unit testing for getGender
+This will test the accuracy of the getGender function, by comparing the outputs of the function to expected gender
+inputs: getGender() function, 
+        "Female"
+        "Male"
+expected output: No output if all the tests are correct
+```{r}
+test_that("Gender of user",
+          { expect_equal(getGender("Female"), "Fmale")
+            expect_equal(getGender("Male"), "Male")
+
+          })
+```
+
+Unit testing for changeValues
+This will test the accuracy of the changeValues function, by comparing the outputs of the function to expected output
+inputs: changeValues() function, 
+        "Yes"
+        "No"
+expected output: No output if all the tests are correct
+```{r}
+test_that("Changing values",
+          { expect_equal(changeValues("Yes"), 1)
+            expect_equal(changeValues("No"), 0)
+
+          })
+```
+
+Unit testing for getBBB
+This will test the accuracy of the getBBB function, by comparing the outputs of the function to expected output
+inputs: getBBB() function, 
+        "Left"
+        "Right"
+        "None"
+expected output: No output if all the tests are correct
+```{r}
+test_that("BBB",
+          { expect_equal(getBBB("Left"), "LBBB")
+            expect_equal(getBBB("None"), "N")
+            expect_equal(getBBB("Right"), "RBBB")
+
+          })
+```
+
+Unit testing for getVHD
+This will test the accuracy of the getVHD function, by comparing the outputs of the function to expected output
+inputs: getVHD() function 
+        "Mild"
+        "Moderate"
+        "None"
+        "Severe"
+expected output: No output if all the tests are correct
+```{r}
+test_that("VHD",
+          { expect_equal(getVHD("Mild"), "mild")
+            expect_equal(getVHD("None"), "N")
+            expect_equal(getVHD("Moderate"), "Moderate")
+            expect_equal(getVHD("Severe"), "Severe")
+
+          })
+```
+
