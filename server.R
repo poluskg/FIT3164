@@ -65,11 +65,6 @@ server <- function(input, output, session) {
     }
   )
   
-  output$var_summary <- renderTable({
-      getVariableSummary(input$var)
-    }
-  )
-  
   #*****MODEL COMPARISON PAGE*****#
   #Render the table which displays model accuracy/performance information
   #defined in the modelComparison_ui.R file.
