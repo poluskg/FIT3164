@@ -48,7 +48,13 @@ body <- dashboardBody(
                            font-style: bold;
                             }"
                           )
-                ), 
+                ),
+      
+      # Information for scatterplot
+      tags$br(
+        h3("Interactive Scatterplot"),
+        h4("Included below is an interactive scatterplot, which plots two continous variables from the dataset against eachother to display the relationship between the variables. You can select the two variables - one for the x axis, and one for the y axis using the drop down menus.")),
+
       tags$br(
                   selectInput('xcol','X Variable', names(za_cont)),
                   selectInput('ycol','Y Variable', names(za_cont)),

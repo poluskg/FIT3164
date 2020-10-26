@@ -42,6 +42,7 @@ server <- function(input, output, session) {
   })
   
   # These are the reactive parts of the plotly scatterplot
+
   x <- reactive({
     za_cont[,input$xcol]
   })
@@ -54,7 +55,7 @@ server <- function(input, output, session) {
       x = x(),
       y = y(),
       type = 'scatter',
-      mode = 'markers') %>% layout(title="Scatterplot of Two Variables")
+      mode = 'markers') %>% layout(title="Correlation Scatterplot")
   )
   
   #Render the text for the getDefinition function which return the corressponding definition 
